@@ -33,7 +33,7 @@ const TrailerCarousel = ({ data, title }) => {
       } else if (window.innerWidth < 768) {
         setCardsPerView(1);
       } else if (window.innerWidth < 1024) {
-        setCardsPerView(3);
+        setCardsPerView(2);
       } else {
         setCardsPerView(4);
       }
@@ -83,7 +83,7 @@ const TrailerCarousel = ({ data, title }) => {
   }
 
   return (
-    <div className="md:px-9 px-1">
+    <div className="xl:px-9 md:px-6 px-2">
       <div className="relative mt-4">
         <div className="overflow-hidden relative">
           {totalSlides > cardsPerView && (
@@ -121,7 +121,7 @@ const TrailerCarousel = ({ data, title }) => {
           )}
 
           <div
-            className="flex transition-transform duration-300 ease-out"
+            className="flex  gap-2 transition-transform duration-300 ease-out"
             style={{
               width: `${Math.ceil(totalSlides / cardsPerView) * 100}%`,
               transform: `translateX(-${(currentSlide / totalSlides) * 100}%)`,
@@ -134,11 +134,10 @@ const TrailerCarousel = ({ data, title }) => {
               return (
                 <div
                   key={`${anime.mal_id}-${index}`}
-                  className="px-1"
-                  style={{ width: `calc(100% / ${cardsPerView})` }}
+                  className="px-0 xl:w-[356px] md:w-[400px] w-[350px]"
                 >
                   <div
-                    className="relative h-[200px] md:h-[220px] rounded-lg overflow-hidden bg-gray-900 cursor-pointer group"
+                    className="relative  h-[200px] xl:h-[220px] md:h-[215px] rounded-lg overflow-hidden bg-gray-900 cursor-pointer group"
                     onClick={() => handleThumbnailClick(youtubeId)}
                   >
                     {activeVideoId !== youtubeId ? (

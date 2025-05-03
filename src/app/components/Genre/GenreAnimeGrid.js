@@ -54,24 +54,20 @@ export default function GenreAnimeGrid({ genreIds, filters }) {
     }
   );
 
-  // Reset cache saat genre atau filter berubah
   useEffect(() => {
     seenIdsRef.current = new Set();
     setUniqueAnime([]);
   }, [genreIds, filters]);
 
-  // Proses data hasil fetch
   useEffect(() => {
     if (!data) return;
 
     const processed = data
       .flatMap((page) => page?.data || [])
       .filter((anime) => {
-        // Filter tipe
         if (!anime.type || !allowedType.includes(anime.type.toLowerCase()))
           return false;
 
-        // Hindari duplikasi
         if (seenIdsRef.current.has(anime.mal_id)) return false;
         seenIdsRef.current.add(anime.mal_id);
         return true;
@@ -91,7 +87,7 @@ export default function GenreAnimeGrid({ genreIds, filters }) {
 
       {!isLoadingInitial && (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2  xl:grid-cols-6 md:grid-cols-5 gap-3">
             {uniqueAnime.length > 0 ? (
               uniqueAnime.map((anime) => (
                 <AnimeCard key={anime.mal_id} anime={anime} />

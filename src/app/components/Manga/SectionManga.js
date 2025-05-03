@@ -63,16 +63,16 @@ const SectionManga = ({
   return (
     <section>
       <div className="flex justify-between items-center mb-4">
-        <div className="hidden md:flex flex-col pl-10 pr-10 w-full">
+        <div className="hidden md:flex flex-col md:pl-6 md:pr-6 xl:pl-10 xl:pr-10 w-full">
           <div className="flex space-x-4">
             {typeOptions.map((opt) => (
               <button
                 key={opt.value}
                 onClick={() => setSelectedType(opt.value)}
-                className={`px-4 py-2 rounded-t-lg ${
+                className={`px-4 py-2  rounded-t-lg ${
                   selectedType === opt.value
-                    ? "bg-purple-600 text-lg font-semibold text-white"
-                    : "bg-gray-800/10 font-semibold hover:text-white text-gray-300"
+                    ? "bg-purple-600 md:text-base xl:text-lg font-semibold text-white"
+                    : "bg-gray-800/10  md:text-sm xl:text-base font-semibold hover:text-white text-gray-300"
                 }`}
               >
                 {opt.label}

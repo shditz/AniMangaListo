@@ -1,4 +1,3 @@
-// app/components/Navbar.client.jsx
 "use client";
 
 import Link from "next/link";
@@ -15,7 +14,6 @@ import {
 } from "react-icons/fa";
 import { debounce } from "lodash-es";
 
-// Reusable Components
 const DropdownChevron = ({ isActive }) => (
   <svg
     className={`w-4 h-4 ml-1 transition-transform ${
@@ -56,7 +54,6 @@ const NavbarClient = ({ dropdownLinks }) => {
   const hoverTimeout = useRef(null);
   const showMobileMenuRef = useRef(mobileStates.menu);
 
-  // Memoized values
   const navClasses = useMemo(
     () =>
       `fixed inset-x-0 z-50 transition-all duration-300 ${
@@ -72,7 +69,6 @@ const NavbarClient = ({ dropdownLinks }) => {
     [isMounted, pathname]
   );
 
-  // Event Handlers
   const handleDropdownHover = useCallback((dropdownName, isEnter) => {
     if (hoverTimeout.current) {
       clearTimeout(hoverTimeout.current);
@@ -95,7 +91,6 @@ const NavbarClient = ({ dropdownLinks }) => {
     setMobileStates((prev) => ({ ...prev, [state]: value }));
   }, []);
 
-  // Effects
   useEffect(() => {
     showMobileMenuRef.current = mobileStates.menu;
   }, [mobileStates.menu]);
@@ -134,7 +129,6 @@ const NavbarClient = ({ dropdownLinks }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [toggleMobileState]);
 
-  // Render Helpers
   const renderDropdownLinks = (type) =>
     dropdownLinks[type].map(({ href, text }) => (
       <Link
@@ -175,9 +169,8 @@ const NavbarClient = ({ dropdownLinks }) => {
 
   return (
     <header className="relative">
-      {/* Main Navbar */}
       <nav className={navClasses}>
-        <div className="max-w-7xl mx-auto px-4 md:px-6 flex justify-between items-center w-full">
+        <div className="max-w-7xl mx-auto px-4 md:px-5 xl:px-0 flex justify-between items-center w-full">
           <Link
             href="/"
             className="flex-shrink-0 text-white text-xl md:text-2xl font-bold"
@@ -185,8 +178,7 @@ const NavbarClient = ({ dropdownLinks }) => {
             AniMangaListo.
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex flex-1 justify-center space-x-6 text-lg dropdown-container">
+          <div className="hidden md:flex flex-1 justify-center md:space-x-5 xl:space-x-6 xl:text-lg dropdown-container">
             <Link
               href="/"
               className={`${
@@ -196,7 +188,6 @@ const NavbarClient = ({ dropdownLinks }) => {
               Home
             </Link>
 
-            {/* Anime Dropdown */}
             <div
               className="relative dropdown-group"
               ref={(el) => (dropdownRefs.current.anime = el)}
@@ -219,21 +210,6 @@ const NavbarClient = ({ dropdownLinks }) => {
                 {renderDropdownLinks("anime")}
               </div>
             </div>
-
-            {/* Static Links */}
-            {dropdownLinks.staticLinks.map(({ href, text }) => (
-              <Link
-                key={href}
-                href={href}
-                className={`${
-                  isActivePath(href) ? "text-purple-500" : "text-white"
-                } hover:text-purple-300 transition duration-300`}
-              >
-                {text}
-              </Link>
-            ))}
-
-            {/* Manga Dropdown */}
             <div
               className="relative dropdown-group"
               ref={(el) => (dropdownRefs.current.manga = el)}
@@ -254,20 +230,29 @@ const NavbarClient = ({ dropdownLinks }) => {
                 {renderDropdownLinks("manga")}
               </div>
             </div>
+            {dropdownLinks.staticLinks.map(({ href, text }) => (
+              <Link
+                key={href}
+                href={href}
+                className={`${
+                  isActivePath(href) ? "text-purple-500" : "text-white"
+                } hover:text-purple-300 transition duration-300`}
+              >
+                {text}
+              </Link>
+            ))}
           </div>
 
-          {/* Desktop Search */}
           <div className="hidden item-center relative group md:flex">
             <input
               type="text"
               placeholder="Search..."
-              className="px-10 py-1.5 md:px-12 md:py-2 bg-transparent border border-purple-400 rounded-full focus:outline-none focus:border-purple-600 group-hover:border-purple-600 transition duration-300 text-sm md:text-base w-32 md:w-64 text-purple-200 placeholder-purple-300"
+              className="px-10 py-2 xl:px-12 xl:py-2 bg-transparent border border-purple-400 rounded-full focus:outline-none focus:border-purple-600 group-hover:border-purple-600 transition duration-300 text-sm xl:text-base md:w-50  xl:w-64 text-purple-200 placeholder-purple-300"
             />
             <FaSearch className="w-4 h-4 md:w-5 md:h-5 absolute left-3 bottom-3 text-purple-300 transition duration-300 group-hover:text-purple-600" />
           </div>
 
-          {/* Mobile Controls */}
-          <div className="flex items-center md:hidden space-x-4">
+          <div className="flex items-center  md:hidden space-x-4">
             <button
               onClick={() => toggleMobileState("search", !mobileStates.search)}
               aria-label="Search"
@@ -288,7 +273,6 @@ const NavbarClient = ({ dropdownLinks }) => {
           </div>
         </div>
 
-        {/* Mobile Search */}
         {mobileStates.search && (
           <div className="flex justify-center mt-2 md:hidden">
             <input
@@ -300,7 +284,6 @@ const NavbarClient = ({ dropdownLinks }) => {
         )}
       </nav>
 
-      {/* Mobile Menu */}
       {mobileStates.menu && (
         <>
           <div
@@ -341,7 +324,6 @@ const NavbarClient = ({ dropdownLinks }) => {
                 Home
               </Link>
 
-              {/* Mobile Anime Dropdown */}
               <div className="flex flex-col pt-3 dropdown-group">
                 <button
                   onClick={() =>
@@ -373,21 +355,6 @@ const NavbarClient = ({ dropdownLinks }) => {
                 )}
               </div>
 
-              {/* Mobile Static Links */}
-              {dropdownLinks.staticLinks.map(({ href, text }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`${
-                    isActivePath(href) ? "text-purple-500" : "text-white"
-                  } block rounded-md text-base font-medium`}
-                  onClick={() => toggleMobileState("menu", false)}
-                >
-                  {text}
-                </Link>
-              ))}
-
-              {/* Mobile Manga Dropdown */}
               <div className="flex flex-col dropdown-group">
                 <button
                   onClick={() =>
@@ -418,6 +385,19 @@ const NavbarClient = ({ dropdownLinks }) => {
                   </div>
                 )}
               </div>
+
+              {dropdownLinks.staticLinks.map(({ href, text }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`${
+                    isActivePath(href) ? "text-purple-500" : "text-white"
+                  } block rounded-md text-base font-medium`}
+                  onClick={() => toggleMobileState("menu", false)}
+                >
+                  {text}
+                </Link>
+              ))}
             </div>
 
             <div className="p-6 pt-4 border-t border-purple-700">

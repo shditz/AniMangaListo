@@ -66,7 +66,7 @@ export default function GenreSelector({ selectedGenres, onGenreSelect }) {
     );
 
   return (
-    <div className="grid grid-cols-3 md:grid-cols-6 gap-1">
+    <div className="grid grid-cols-3 md:grid-cols-5 xl:grid-cols-6 gap-1">
       {genres.map((genre) => (
         <button
           key={genre.mal_id}

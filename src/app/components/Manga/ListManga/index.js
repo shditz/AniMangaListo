@@ -63,14 +63,14 @@ const ListManga = ({ api, metric }) => {
 
   return (
     <div className="relative">
-      <div className="grid md:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-3 px-2 md:px-10">
+      <div className="grid xl:grid-cols-5 md:grid-cols-5 grid-cols-2 gap-3 px-2 md:px-6 xl:px-10">
         {data.map((manga, index) => (
           <div key={`${manga.mal_id}-${index}`} className="shadow-xl">
             <Link
               href={`/${manga.mal_id}`}
               className="cursor-pointer relative block group"
             >
-              <div className="w-full relative h-[250px] sm:h-[350px]">
+              <div className="w-full relative h-[250px] xl:h-[350px]">
                 <Image
                   src={manga.images?.jpg?.large_image_url || "/placeholder.jpg"}
                   alt={manga.title}

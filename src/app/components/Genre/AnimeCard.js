@@ -11,7 +11,7 @@ export default function AnimeCard({ anime }) {
       href={`/anime/${anime.mal_id}`}
       className="group bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow relative block"
     >
-      <div className="relative pb-[142%]">
+      <div className="relative md:h-[250px] xl:h-[350px] pb-[142%]">
         <img
           src={imageUrl}
           alt={anime.title}

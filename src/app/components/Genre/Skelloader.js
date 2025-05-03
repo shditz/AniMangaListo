@@ -6,7 +6,7 @@ export default function SkeletonLoader() {
       {[...Array(20)].map((_, i) => (
         <div
           key={i}
-          className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg h-40 md:h-90"
+          className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg h-60 md:h-50 xl:h-90"
         ></div>
       ))}
     </div>

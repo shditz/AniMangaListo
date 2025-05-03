@@ -155,13 +155,13 @@ const LatestCompleted = ({ data }) => {
             {uniqueData.map((anime, index) => (
               <div
                 key={`${anime.mal_id}-${index}`}
-                className="flex-shrink-0 w-[180px] md:w-[291.5px] left-2 px-2"
+                className="flex-shrink-0 w-[180px] xl:w-[291.5px] md:w-[197px] left-2 px-2"
               >
                 <Link
                   href={`/anime/${anime.mal_id}`}
                   className="cursor-pointer block group"
                 >
-                  <div className="relative h-[200px] md:h-[280px] rounded-lg overflow-hidden bg-gray-900">
+                  <div className="relative h-[200px] xl:h-[280px] rounded-lg overflow-hidden bg-gray-900">
                     <Image
                       src={anime.images.jpg.large_image_url}
                       alt={anime.title}

@@ -34,14 +34,14 @@ const ListAnime = ({ api, metric }) => {
 
   return (
     <div className="relative">
-      <div className="grid md:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-3 px-2 md:px-10">
+      <div className="grid xl:grid-cols-5 md:grid-cols-5 grid-cols-2 gap-3 px-2 md:px-6 xl:px-10">
         {uniqueData.map((anime, index) => (
           <div key={`${anime.mal_id}-${index}`} className="shadow-xl">
             <Link
               href={`/anime/${anime.mal_id}`}
               className="cursor-pointer relative block group"
             >
-              <div className="w-full relative h-[250px] sm:h-[350px]">
+              <div className="w-full relative h-[250px] xl:h-[350px]">
                 <Image
                   src={anime.images.jpg.large_image_url}
                   alt={anime.title}

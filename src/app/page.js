@@ -32,114 +32,116 @@ const DynamicSection = dynamic(() =>
 
 export const revalidate = 3600;
 
-async function fetchData(endpoint) {
-  const res = await fetch(`https://api.jikan.moe/v4/${endpoint}`, {
-    next: { revalidate: 3600 },
-  });
-  if (!res.ok) throw new Error(`Failed to fetch ${endpoint}`);
-  return res.json();
+async function fetchWithRetry(endpoint, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const res = await fetch(`https://api.jikan.moe/v4/${endpoint}`, {
+        next: { revalidate: 3600 },
+      });
+      if (res.ok) return res.json();
+
+      if (res.status === 429) {
+        await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
+        continue;
+      }
+
+      throw new Error(`Failed to fetch ${endpoint}: ${res.status}`);
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
+    }
+  }
 }
 
 async function getCombinedData() {
+  const endpoints = [
+    "seasons/now?limit=20",
+    "watch/episodes",
+    "anime?status=complete&order_by=end_date&sort=desc&limit=22&type=tv",
+    "top/anime?limit=10",
+    "top/anime?limit=11&type=movie",
+    "top/anime?limit=11&filter=airing&type=tv",
+    "anime?type=tv&limit=10",
+    "seasons/now?limit=10",
+    "manga?limit=10",
+    "top/manga?limit=10&type=manga",
+    "top/manga?limit=10&filter=publishing&type=manga",
+    "top/manga?filter=upcoming&limit=10",
+    "top/manga?filter=bypopularity&limit=10",
+    "top/manga?filter=favorite&limit=10",
+    "top/characters?limit=10",
+    "top/anime?filter=bypopularity&limit=17",
+    "top/anime?limit=21",
+    "top/anime?limit=18&type=movie",
+    "top/anime?limit=21&filter=airing&type=tv",
+    "seasons/upcoming?limit=20",
+    "top/anime?limit=20&filter=favorite",
+    "seasons/now?limit=17",
+  ];
+
   try {
-    const [
-      currentSeasonRes,
-      recentEpisodesRes,
-      latestCompletedRes,
-      topAnimeRes,
-      topMovieRes,
-      topAiringRes,
-      allAnimeRes,
-      seasonalAnimeRes,
-      allMangaRes,
-      topMangaRes,
-      topPublishingRes,
-      topUpcomingMangaRes,
-      mostPopularMangaRes,
-      mostFavoritedMangaRes,
-      topCharactersRes,
-      popularTrailersRes,
-      topAnimeTrailersRes,
-      movieTlRes,
-      topAiringTlRes,
-      topUpcomingTlRes,
-      favoritedTlRes,
-    ] = await Promise.all([
-      fetchData("seasons/now?limit=22"),
-      fetchData("watch/episodes?type=tv"),
-      fetchData(
-        "anime?status=complete&order_by=end_date&sort=desc&limit=22&type=tv"
-      ),
-      fetchData("top/anime?limit=10"),
-      fetchData("top/anime?limit=11&type=movie"),
-      fetchData("top/anime?limit=11&filter=airing&type=tv"),
-      fetchData("anime?type=tv&limit=10"),
-      fetchData("seasons/now?limit=10"),
-      fetchData("manga?limit=10"),
-      fetchData("top/manga?limit=10&type=manga"),
-      fetchData("top/manga?limit=10&filter=publishing&type=manga"),
-      fetchData("top/manga?filter=upcoming&limit=10"),
-      fetchData("top/manga?filter=bypopularity&limit=10"),
-      fetchData("top/manga?filter=favorite&limit=10"),
-      fetchData("top/characters?limit=10"),
-      fetchData("top/anime?filter=bypopularity&limit=17"),
-      fetchData("top/anime?limit=21"),
-      fetchData("top/anime?limit=18&type=movie"),
-      fetchData("top/anime?limit=21&filter=airing&type=tv"),
-      fetchData("seasons/upcoming?limit=20"),
-      fetchData("top/anime?limit=20&filter=favorite"),
-    ]);
+    const results = await Promise.allSettled(
+      endpoints.map((endpoint) => fetchWithRetry(endpoint))
+    );
+
+    const getData = (index) =>
+      results[index]?.status === "fulfilled"
+        ? results[index].value?.data || []
+        : [];
 
     return {
-      currentSeason: currentSeasonRes.data,
-      recentEpisodes: recentEpisodesRes.data,
-      latestCompleted: latestCompletedRes.data,
-      topAnime: topAnimeRes.data,
-      topMovie: topMovieRes.data,
-      topAiring: topAiringRes.data,
-      allAnime: allAnimeRes.data,
-      seasonalAnime: seasonalAnimeRes.data,
-      allManga: allMangaRes.data,
-      topManga: topMangaRes.data,
-      topPublishing: topPublishingRes.data,
-      topUpcomingManga: topUpcomingMangaRes.data,
-      mostPopularManga: mostPopularMangaRes.data,
-      mostFavoritedManga: mostFavoritedMangaRes.data,
-      topCharacters: topCharactersRes.data,
+      currentSeason: getData(0),
+      recentEpisodes: getData(1),
+      latestCompleted: getData(2),
+      topAnime: getData(3),
+      topMovie: getData(4),
+      topAiring: getData(5),
+      allAnime: getData(6),
+      seasonalAnime: getData(7),
+      allManga: getData(8),
+      topManga: getData(9),
+      topPublishing: getData(10),
+      topUpcomingManga: getData(11),
+      mostPopularManga: getData(12),
+      mostFavoritedManga: getData(13),
+      topCharacters: getData(14),
       trailers: {
-        popular: popularTrailersRes.data,
-        topAnime: topAnimeTrailersRes.data,
-        seasonalAnime: seasonalAnimeRes.data.slice(0, 17),
-        movieTl: movieTlRes.data,
-        topAiringTl: topAiringTlRes.data,
-        topUpcomingTl: topUpcomingTlRes.data,
-        favorited: favoritedTlRes.data,
+        popular: getData(15),
+        topAnime: getData(16),
+        seasonalAnime: getData(21).slice(0, 17) || [],
+        movieTl: getData(17),
+        topAiringTl: getData(18),
+        topUpcomingTl: getData(19),
+        favorited: getData(20),
       },
     };
   } catch (error) {
     console.error("Error fetching combined data:", error);
-    return {};
+    return {
+      trailers: {},
+    };
   }
 }
-
 export default async function Home() {
   const data = await getCombinedData();
 
   return (
     <div className="overflow-x-hidden md:pt-12 pt-38">
       <section className="p-4 mb-8">
-        {data.currentSeason && <AnimeCarousel animeList={data.currentSeason} />}
+        {data.currentSeason?.length > 0 && (
+          <AnimeCarousel animeList={data.currentSeason} />
+        )}
       </section>
 
-      <section className="md:p-4 md:pt-0">
+      <section className="xl:p-4 pt-0">
         <NewEpisodesSection data={data.recentEpisodes} />
       </section>
 
-      <section className="md:p-4 md:pt-0">
+      <section className="xl:p-4 pt-0">
         <LatestCompleted data={data.latestCompleted} />
       </section>
 
-      <section className="md:pb-4 pl-10 pb-2 pt-4">
+      <section className="md:pb-4 pl-2 md:pl-6 xl:pl-10 pb-2 pt-4">
         <h1 className="md:text-3xl text-2xl font-bold relative pl-4 inline-flex items-center group">
           Anime
           <span className="absolute left-0 top-0 bottom-0 w-1 bg-purple-700 rounded-full"></span>
@@ -148,18 +150,18 @@ export default async function Home() {
 
       <Suspense fallback="Load Anime Content...">
         <DynamicSection
-          mostPopularData={data.topAnime}
-          mostFavoritedData={data.topAnime}
-          topAiringData={data.topAiring}
-          topAnimeData={data.topAnime}
-          topMovieData={data.topMovie}
-          allAnime={data.allAnime}
-          upcomingData={data.seasonalAnime}
-          seasonalAnimeData={data.seasonalAnime}
+          mostPopularData={data.topAnime || []}
+          mostFavoritedData={data.topAnime || []}
+          topAiringData={data.topAiring || []}
+          topAnimeData={data.topAnime || []}
+          topMovieData={data.topMovie || []}
+          allAnime={data.allAnime || []}
+          upcomingData={data.seasonalAnime || []}
+          seasonalAnimeData={data.seasonalAnime || []}
         />
       </Suspense>
 
-      <section className="md:pb-4 pb-2 pl-10 pt-3">
+      <section className="md:pb-4 pb-2 pl-2 md:pl-6 xl:pl-10 pt-3">
         <h1 className="md:text-3xl text-2xl font-bold relative pl-3 inline-flex items-center group">
           Trailers Anime
           <span className="absolute left-0 top-0 bottom-0 w-1 bg-purple-700 rounded-full"></span>
@@ -168,17 +170,16 @@ export default async function Home() {
 
       <Suspense fallback="Load Trailers...">
         <DynamicTrailerSection
-          popular={data.trailers.popular}
-          topAnime={data.trailers.topAnime}
-          seasonalAnime={data.trailers.seasonalAnime}
-          movieTl={data.trailers.movieTl}
-          topAiringTl={data.trailers.topAiringTl}
-          topUpcomingTl={data.trailers.topUpcomingTl}
-          favorited={data.trailers.favorited}
+          popular={data.trailers?.popular || []}
+          topAnime={data.trailers?.topAnime || []}
+          seasonalAnime={data.trailers?.seasonalAnime || []}
+          movieTl={data.trailers?.movieTl || []}
+          topAiringTl={data.trailers?.topAiringTl || []}
+          topUpcomingTl={data.trailers?.topUpcomingTl || []}
+          favorited={data.trailers?.favorited || []}
         />
       </Suspense>
-
-      <section className="md:p-4 p-2 md:pt-0">
+      <section className="xl:p-4 md:p-0 p-2 md:pt-0">
         <Header2 title="Recommendation Anime" />
         <RecommendationAnime limit={10} />
         <div className="flex justify-center md:mt-4">
@@ -199,7 +200,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="md:pb-4 pb-2 p-10 pt-4">
+      <section className="md:pb-4 pl-2 md:pl-6 xl:pl-10 pb-2 p-1 pt-4">
         <h1 className="md:text-3xl text-2xl font-bold relative pl-3 inline-flex items-center group">
           Manga
           <span className="absolute left-0 top-0 bottom-0 w-1 bg-purple-700 rounded-full"></span>
@@ -217,7 +218,7 @@ export default async function Home() {
         />
       </Suspense>
 
-      <section className="md:p-4 p-2 md:pt-0">
+      <section className="xl:p-4 md:p-0 p-2 md:pt-0">
         <Header2 title="Recommendation Manga" />
         <RecommendationManga limit={10} />
         <div className="flex justify-center mt-4">
@@ -238,8 +239,8 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="md:p-4 md:pt-0">
-        <div className="pl-0 md:pl-6 p-4">
+      <section className="xl:p-4 md:pt-0">
+        <div className="pl-2 md:pl-6 xl:pl-6 p-4">
           <h1 className="md:text-2xl text-lg font-bold relative inline-block pb-2">
             Top Character
             <span className="absolute bottom-0 left-0 w-full h-1 bg-purple-700"></span>

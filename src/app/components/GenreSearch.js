@@ -85,13 +85,11 @@ export default function GenreSearchClient() {
   };
 
   return (
-    <div className="md:pl-10 pl-4 pr-4 md:pr-10">
-      {/* Loading State */}
+    <div className="xl:pl-10 md:pl-4 md:pr-4 pl-2 pr-2 xl:pr-10">
       {isLoading && (
         <div className="text-center py-8 text-gray-300">Load Genre...</div>
       )}
 
-      {/* Error State */}
       {error && (
         <div className="text-center py-8 text-red-400">
           <p>Error Load Genre: {error}</p>

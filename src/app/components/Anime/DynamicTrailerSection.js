@@ -67,16 +67,16 @@ const DynamicTrailerSection = ({
   return (
     <section className="mb-2">
       <div className="flex justify-between items-center mb-4">
-        <div className="hidden md:flex flex-col pl-10 pr-10 w-full">
+        <div className="hidden md:flex flex-col xl:pl-10 xl:pr-10 md:pl-6 md:pr-6 w-full">
           <div className="flex flex-wrap gap-2">
             {typeOptions.map((opt) => (
               <button
                 key={opt.value}
                 onClick={() => setSelectedType(opt.value)}
-                className={`px-4 py-2 rounded-t-lg transition-colors ${
+                className={`xl:px-4 px-3 py-2 rounded-t-lg transition-colors ${
                   selectedType === opt.value
                     ? "bg-purple-600 text-white text-lg font-semibold"
-                    : "bg-gray-800/10 hover:text-white font-semibold text-gray-300 "
+                    : "bg-gray-800/10  hover:text-white font-semibold text-gray-300 "
                 }`}
               >
                 {opt.label}

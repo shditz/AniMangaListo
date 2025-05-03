@@ -38,7 +38,7 @@ export default function RecommendationAnime({ limit = 10 }) {
           {[...Array(limit)].map((_, i) => (
             <div
               key={i}
-              className="bg-gray-200 rounded animate-pulse h-[250px] md:h-[350px]"
+              className="bg-gray-200 rounded animate-pulse h-[250px] xl:h-[350px]"
             ></div>
           ))}
         </div>
@@ -66,14 +66,14 @@ export default function RecommendationAnime({ limit = 10 }) {
 
   return (
     <div className="relative">
-      <div className="grid md:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-3 md:px-6">
+      <div className="grid xl:grid-cols-5 md:grid-cols-5  grid-cols-2 gap-3 md:px-6">
         {allRecommendations.map((anime, index) => (
           <div key={`${anime.mal_id}-${index}`} className="shadow-xl">
             <Link
               href={`/anime/${anime.mal_id}`}
               className="cursor-pointer relative block group"
             >
-              <div className="w-full relative h-[250px] sm:h-[350px]">
+              <div className="w-full relative h-[250px] xl:h-[350px]">
                 <Image
                   src={anime.images.jpg.large_image_url}
                   alt={anime.title}

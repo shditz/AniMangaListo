@@ -10,7 +10,7 @@ export default function VoiceActorCard({ voiceActor, rank }) {
         href={`/people/${voiceActor.mal_id}`}
         className="cursor-pointer relative block group"
       >
-        <div className="w-full relative h-[250px] sm:h-[350px]">
+        <div className="w-full relative h-[250px] xl:h-[350px]">
           <Image
             src={voiceActor.images?.jpg?.image_url || "/default-avatar.png"}
             alt={voiceActor.name || "Unknown Voice Actor"}

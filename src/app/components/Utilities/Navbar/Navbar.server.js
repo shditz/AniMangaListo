@@ -1,4 +1,3 @@
-// app/components/Navbar.server.jsx
 import NavbarClient from "./Navbar.client";
 
 export const revalidate = 3600;

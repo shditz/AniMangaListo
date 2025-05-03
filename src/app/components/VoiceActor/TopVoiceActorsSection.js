@@ -17,7 +17,6 @@ export default function TopVoiceActorsSection() {
         const data = await res.json();
         setTopVAs(data.topVAs || []);
 
-        // Set season name jika ada data seasonInfo
         if (data.seasonInfo) {
           setSeasonName(
             `${data.seasonInfo.season} ${data.seasonInfo.year}`.replace(
@@ -45,11 +44,11 @@ export default function TopVoiceActorsSection() {
             <span className="absolute bottom-0 left-0 w-full h-1 bg-purple-700"></span>
           </h1>
         </div>
-        <div className="grid md:grid-cols-5 grid-cols-2 gap-3">
+        <div className="grid xl:grid-cols-5 md:grid-cols-5  grid-cols-2 gap-3">
           {[...Array(10)].map((_, i) => (
             <div
               key={i}
-              className="bg-gray-200 rounded animate-pulse h-[250px] md:h-[350px]"
+              className="bg-gray-200 rounded animate-pulse h-[250px] xl:h-[350px]"
             ></div>
           ))}
         </div>
@@ -60,7 +59,7 @@ export default function TopVoiceActorsSection() {
   if (topVAs.length === 0) return null;
 
   return (
-    <section className="md:px-10 p-2">
+    <section className="xl:px-10 md:px-6 p-2">
       <div className="mb-4 mt-2">
         <h1 className="md:text-2xl text-lg md:left-0 right-0 font-bold relative inline-block pb-2">
           Top Voice Actors ({seasonName})

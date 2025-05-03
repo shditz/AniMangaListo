@@ -38,7 +38,7 @@ export default function RecommendationManga({ limit = 10 }) {
           {[...Array(limit)].map((_, i) => (
             <div
               key={i}
-              className="bg-gray-200 rounded animate-pulse h-[250px] md:h-[350px]"
+              className="bg-gray-200 rounded animate-pulse h-[250px] xl:h-[350px]"
             ></div>
           ))}
         </div>
@@ -73,7 +73,7 @@ export default function RecommendationManga({ limit = 10 }) {
               href={`/manga/${manga.mal_id}`}
               className="cursor-pointer relative block group"
             >
-              <div className="w-full relative h-[250px] sm:h-[350px]">
+              <div className="w-full relative h-[250px] xl:h-[350px]">
                 <Image
                   src={manga.images.jpg.large_image_url}
                   alt={manga.title}
