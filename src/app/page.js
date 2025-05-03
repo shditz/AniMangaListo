@@ -54,54 +54,39 @@ async function fetchWithRetry(endpoint, retries = 3) {
 }
 
 async function getCombinedData() {
+  const endpoints = [
+    "seasons/now?limit=22",
+    "watch/episodes?type=tv",
+    "anime?status=complete&order_by=end_date&sort=desc&limit=22&type=tv",
+    "top/anime?limit=10",
+    "top/anime?limit=11&type=movie",
+    "top/anime?limit=11&filter=airing&type=tv",
+    "anime?type=tv&limit=10",
+    "seasons/now?limit=10",
+    "manga?limit=10",
+    "top/manga?limit=10&type=manga",
+    "top/manga?limit=10&filter=publishing&type=manga",
+    "top/manga?filter=upcoming&limit=10",
+    "top/manga?filter=bypopularity&limit=10",
+    "top/manga?filter=favorite&limit=10",
+    "top/characters?limit=10",
+    "top/anime?filter=bypopularity&limit=17",
+    "top/anime?limit=21",
+    "top/anime?limit=18&type=movie",
+    "top/anime?limit=21&filter=airing&type=tv",
+    "seasons/upcoming?limit=20",
+    "top/anime?limit=20&filter=favorite",
+  ];
+
   try {
-    const [
-      currentSeasonRes,
-      recentEpisodesRes,
-      latestCompletedRes,
-      topAnimeRes,
-      topMovieRes,
-      topAiringRes,
-      allAnimeRes,
-      seasonalAnimeRes,
-      allMangaRes,
-      topMangaRes,
-      topPublishingRes,
-      topUpcomingMangaRes,
-      mostPopularMangaRes,
-      mostFavoritedMangaRes,
-      topCharactersRes,
-      popularTrailersRes,
-      topAnimeTrailersRes,
-      movieTlRes,
-      topAiringTlRes,
-      topUpcomingTlRes,
-      favoritedTlRes,
-    ] = await Promise.all([
-      fetchData("seasons/now?limit=22"),
-      fetchData("watch/episodes?type=tv"),
-      fetchData(
-        "anime?status=complete&order_by=end_date&sort=desc&limit=22&type=tv"
-      ),
-      fetchData("top/anime?limit=10"),
-      fetchData("top/anime?limit=11&type=movie"),
-      fetchData("top/anime?limit=11&filter=airing&type=tv"),
-      fetchData("anime?type=tv&limit=10"),
-      fetchData("seasons/now?limit=10"),
-      fetchData("manga?limit=10"),
-      fetchData("top/manga?limit=10&type=manga"),
-      fetchData("top/manga?limit=10&filter=publishing&type=manga"),
-      fetchData("top/manga?filter=upcoming&limit=10"),
-      fetchData("top/manga?filter=bypopularity&limit=10"),
-      fetchData("top/manga?filter=favorite&limit=10"),
-      fetchData("top/characters?limit=10"),
-      fetchData("top/anime?filter=bypopularity&limit=17"),
-      fetchData("top/anime?limit=21"),
-      fetchData("top/anime?limit=18&type=movie"),
-      fetchData("top/anime?limit=21&filter=airing&type=tv"),
-      fetchData("seasons/upcoming?limit=20"),
-      fetchData("top/anime?limit=20&filter=favorite"),
-    ]);
+    const results = await Promise.allSettled(
+      endpoints.map((endpoint) => fetchWithRetry(endpoint))
+    );
+
+    const getData = (index) =>
+      results[index]?.status === "fulfilled"
+        ? results[index].value?.data || []
+        : [];
 
     return {
       currentSeason: getData(0),
