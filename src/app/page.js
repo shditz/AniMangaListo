@@ -55,8 +55,8 @@ async function fetchWithRetry(endpoint, retries = 3) {
 
 async function getCombinedData() {
   const endpoints = [
-    "seasons/now?limit=22",
-    "watch/episodes?type=tv",
+    "seasons/now?limit=20",
+    "watch/episodes",
     "anime?status=complete&order_by=end_date&sort=desc&limit=22&type=tv",
     "top/anime?limit=10",
     "top/anime?limit=11&type=movie",
@@ -76,6 +76,7 @@ async function getCombinedData() {
     "top/anime?limit=21&filter=airing&type=tv",
     "seasons/upcoming?limit=20",
     "top/anime?limit=20&filter=favorite",
+    "seasons/now?limit=17",
   ];
 
   try {
@@ -105,13 +106,13 @@ async function getCombinedData() {
       mostFavoritedManga: getData(13),
       topCharacters: getData(14),
       trailers: {
-        popular: popularTrailersRes.data,
-        topAnime: topAnimeTrailersRes.data,
-        seasonalAnime: seasonalAnimeRes.data.slice(0, 17),
-        movieTl: movieTlRes.data,
-        topAiringTl: topAiringTlRes.data,
-        topUpcomingTl: topUpcomingTlRes.data,
-        favorited: favoritedTlRes.data,
+        popular: getData(15),
+        topAnime: getData(16),
+        seasonalAnime: getData(21).slice(0, 17) || [],
+        movieTl: getData(17),
+        topAiringTl: getData(18),
+        topUpcomingTl: getData(19),
+        favorited: getData(20),
       },
     };
   } catch (error) {
@@ -178,8 +179,7 @@ export default async function Home() {
           favorited={data.trailers?.favorited || []}
         />
       </Suspense>
-
-      <section className="md:p-4 p-2 md:pt-0">
+      <section className="xl:p-4 md:p-0 p-2 md:pt-0">
         <Header2 title="Recommendation Anime" />
         <RecommendationAnime limit={10} />
         <div className="flex justify-center md:mt-4">
