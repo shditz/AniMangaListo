@@ -30,12 +30,11 @@ const DynamicSection = dynamic(() =>
   import("./components/Anime/DynamicSection")
 );
 
-// Enable ISR - regenerate every hour
 export const revalidate = 3600;
 
 async function fetchData(endpoint) {
   const res = await fetch(`https://api.jikan.moe/v4/${endpoint}`, {
-    next: { revalidate: 3600 }, // Cache for 1 hour
+    next: { revalidate: 3600 },
   });
   if (!res.ok) throw new Error(`Failed to fetch ${endpoint}`);
   return res.json();

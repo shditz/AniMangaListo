@@ -1,16 +1,15 @@
 "use client";
-
 import useSWR from "swr";
 import Image from "next/image";
-import TrailerPlayer from "@/app/components/AnimeDetails/TrailerPlayer/TrailerPlayer";
-import StreamModal from "@/app/components/AnimeDetails/StreamModel";
-import ContentTabs from "@/app/components/AnimeDetails/ContentTabs";
-import ShareButtons from "@/app/components/AnimeDetails/Share";
+import TrailerPlayer from "./TrailerPlayer/TrailerPlayer";
+import StreamModal from "./StreamModel";
+import ContentTabs from "./ContentTabs";
+import ShareButtons from "./Share";
 import { formatNumber, capitalizeFirstLetter } from "@/app/lib/utils";
 import { fetcher } from "@/app/lib/fetcher";
 
 export default function AnimeDetailContent({ id, initialData }) {
-  const { data, error, isLoading } = useSWR(`/api/anime/${id}`, fetcher, {
+  const { data, error } = useSWR(`/api/anime/${id}`, fetcher, {
     fallbackData: initialData,
     revalidateOnFocus: true,
     refreshInterval: 300000,
@@ -32,7 +31,6 @@ export default function AnimeDetailContent({ id, initialData }) {
     characters = [],
     staff = [],
   } = data;
-
   const metaData = {
     title: anime.title || "Anime Details",
     description: anime.synopsis || "Discover this amazing anime",

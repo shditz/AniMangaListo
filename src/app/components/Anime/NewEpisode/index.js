@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "../ListAnime/Header";
 
-// SSR Data Fetching Function
 async function fetchEpisodes() {
   const res = await fetch("https://api.jikan.moe/v4/watch/episodes", {
     cache: "no-store",

@@ -2,9 +2,8 @@ import { fetchWithRetry } from "@/app/lib/jikan";
 import { getNames, capitalizeFirstLetter } from "@/app/lib/utils";
 
 export async function GET(request, { params }) {
-  const { id } = params;
-
   try {
+    const { id } = await params;
     const [animeRes, streamRes, charsRes, episodesRes, staffRes] =
       await Promise.all([
         fetchWithRetry(`anime/${id}`),

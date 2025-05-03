@@ -84,7 +84,7 @@ export default function AnimeCarousel({ animeList }) {
   if (!uniqueAnimes.length) {
     return (
       <div className="text-center text-gray-500 py-8">
-        Tidak ada anime tersedia.
+        Anime Not Found, Reload Again
       </div>
     );
   }

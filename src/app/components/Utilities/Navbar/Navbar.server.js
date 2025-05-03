@@ -1,6 +1,8 @@
 // app/components/Navbar.server.jsx
 import NavbarClient from "./Navbar.client";
 
+export const revalidate = 3600;
+
 const STATIC_LINKS = {
   anime: [
     { href: "/seasonal", text: "Seasonal Anime" },

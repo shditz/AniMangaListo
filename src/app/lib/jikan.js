@@ -1,10 +1,9 @@
 import { delay } from "./utils";
 
 const JIKAN_BASE_URL = "https://api.jikan.moe/v4";
-const RATE_LIMIT_DELAY = 3000; // Tambahkan delay 3 detik antara request
+const RATE_LIMIT_DELAY = 100;
 
 export const fetchJikan = async (endpoint) => {
-  // Tambahkan delay sebelum setiap request
   await delay(RATE_LIMIT_DELAY);
 
   const res = await fetch(`${JIKAN_BASE_URL}/${endpoint}`, {
@@ -32,8 +31,18 @@ export const fetchWithRetry = async (endpoint, retries = 3) => {
     try {
       return await fetchJikan(endpoint);
     } catch (error) {
-      if (i === retries - 1) throw error;
-      await delay(1000 * Math.pow(2, i)); // Exponential backoff
+      if (
+        error.message.includes("429") ||
+        error.message.includes("Failed to fetch")
+      ) {
+        if (i < retries - 1) {
+          const backoff = 1000 * Math.pow(2, i);
+          console.log(`Retrying ${endpoint} in ${backoff}ms...`);
+          await delay(backoff);
+          continue;
+        }
+      }
+      throw error;
     }
   }
 };
