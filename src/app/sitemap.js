@@ -4,13 +4,18 @@ async function getAnimeList() {
   return data.data;
 }
 
+function isValidDate(dateString) {
+  const date = new Date(dateString);
+  return dateString && date.toString() !== "Invalid Date" ? date : new Date();
+}
+
 export default async function sitemap() {
   const baseUrl = "https://animangalisto.vercel.app";
   const animeList = await getAnimeList();
 
   const animeEntries = animeList.map((anime) => ({
     url: `${baseUrl}/anime/${anime.mal_id}`,
-    lastModified: new Date(anime.updated_at),
+    lastModified: isValidDate(anime.updated_at),
     changeFrequency: "monthly",
     priority: 0.7,
   }));
