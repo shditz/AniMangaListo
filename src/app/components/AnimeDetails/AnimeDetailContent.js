@@ -16,42 +16,6 @@ export default function AnimeDetailContent({ id, initialData }) {
     refreshInterval: 300000,
   });
 
-  const [crunchyrollId, setCrunchyrollId] = useState(null);
-
-  useEffect(() => {
-    if (!data || !data.anime?.mal_id) return;
-
-    const fetchCrunchyrollId = async () => {
-      try {
-        const res = await fetch(`/api/anime/${data.anime.mal_id}/external`);
-
-        if (!res.ok) {
-          if (res.status === 404) {
-            console.log("No external links found");
-            return;
-          }
-          throw new Error(`HTTP Error: ${res.status}`);
-        }
-
-        const externalData = await res.json();
-
-        const externalLinks = externalData?.data || [];
-
-        const crLink = externalLinks.find(
-          (link) => link?.name?.toLowerCase() === "crunchyroll"
-        );
-
-        const match = crLink?.url?.match(/\/([A-Z0-9]+)\//);
-        setCrunchyrollId(match?.[1] || null);
-      } catch (err) {
-        console.error("Error fetching external links:", err);
-        setCrunchyrollId(null);
-      }
-    };
-
-    fetchCrunchyrollId();
-  }, [data]);
-
   if (error)
     return (
       <div className="text-red-500 text-center py-20">
@@ -406,7 +370,6 @@ export default function AnimeDetailContent({ id, initialData }) {
         episodes={episodes}
         characters={characters}
         staff={staff}
-        crunchyrollId={crunchyrollId}
         animeTitle={englishTitle}
       />
     </div>

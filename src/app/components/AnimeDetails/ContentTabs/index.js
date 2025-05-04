@@ -9,7 +9,7 @@ const ContentTabs = ({
   episodes,
   characters,
   staff,
-  crunchyrollId,
+
   animeTitle,
 }) => {
   const [activeTab, setActiveTab] = useState("Episodes");
@@ -122,17 +122,9 @@ const ContentTabs = ({
                   })
                 : "-";
 
-              const episodeSlug = episode.title
-                .toLowerCase()
-                .replace(/\s+/g, "-")
-                .replace(/[^\w\-]+/g, "");
-
-              let crunchyrollUrl = `https://www.crunchyroll.com/search?q=${encodeURIComponent(
-                animeTitle + " " + episode.number
+              const crunchyrollUrl = `https://www.crunchyroll.com/search?q=${encodeURIComponent(
+                `${animeTitle} Episode ${episode.number}`
               )}`;
-              if (crunchyrollId) {
-                crunchyrollUrl = `https://www.crunchyroll.com/id/watch/${crunchyrollId}/${episodeSlug}`;
-              }
 
               return (
                 <Link
