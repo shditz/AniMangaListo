@@ -67,7 +67,7 @@ const ListManga = ({ api, metric }) => {
         {data.map((manga, index) => (
           <div key={`${manga.mal_id}-${index}`} className="shadow-xl">
             <Link
-              href={`/${manga.mal_id}`}
+              href={`/manga/${manga.mal_id}`}
               className="cursor-pointer relative block group"
             >
               <div className="w-full relative h-[250px] xl:h-[350px]">

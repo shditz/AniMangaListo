@@ -102,7 +102,7 @@ const ContentTabs = ({
               className={`px-4 py-2 rounded-lg transition-colors ${
                 activeTab === tab
                   ? "bg-purple-600 md:text-xs  xl:text-lg font-semibold text-white"
-                  : "g-gray-800/10 font-semibold hover:text-white text-gray-300"
+                  : " font-semibold hover:text-white text-gray-300"
               }`}
             >
               {tab}

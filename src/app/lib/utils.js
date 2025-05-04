@@ -8,6 +8,12 @@ export const checkCache = async (key) => {
   return null;
 };
 
+export function formatDate(dateString) {
+  if (!dateString) return "-";
+  const options = { year: "numeric", month: "short", day: "numeric" };
+  return new Date(dateString).toLocaleDateString("en-US", options);
+}
+
 export const saveToCache = (key, data) => {
   if (typeof window !== "undefined") {
     localStorage.setItem(key, JSON.stringify(data));
