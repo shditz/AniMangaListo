@@ -70,11 +70,7 @@ const TrailerCarousel = ({ data, title }) => {
 
   if (filteredData.length === 0) {
     return (
-      <div className="p-4">
-        <h1 className="md:text-2xl text-xl font-bold relative inline-block pb-2">
-          {title || "Trailers Anime"}
-          <span className="absolute bottom-0 left-0 w-full h-1 bg-purple-700"></span>
-        </h1>
+      <div className="flex justify-center">
         <p className="text-gray-400 mt-4">
           No trailers available for this category.
         </p>
