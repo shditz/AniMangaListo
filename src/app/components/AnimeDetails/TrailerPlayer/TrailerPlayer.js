@@ -6,7 +6,7 @@ export default function TrailerPlayer({ youtubeId }) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <div className="w-full md:w-[450px] p-4">
+    <div className="w-full md:w-[280px] xl:w-[450px] p-4">
       {youtubeId ? (
         <>
           <div className="relative aspect-video group">
@@ -22,7 +22,7 @@ export default function TrailerPlayer({ youtubeId }) {
                 className="p-2 rounded-full bg-red-500/90 hover:bg-red-600 transition-all transform hover:scale-110"
               >
                 <svg
-                  className="w-10 h-10 text-white"
+                  className="xl:w-10 h-5 w-5 xl:h-10 text-white"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -30,15 +30,15 @@ export default function TrailerPlayer({ youtubeId }) {
                 </svg>
               </button>
 
-              <div className="absolute top-2 left-2 bg-red-500 text-white px-3 py-1 rounded-br-lg rounded-tl-lg text-sm font-bold">
+              <div className="absolute top-2 left-2 bg-red-500 text-white px-3 py-1 rounded-br-lg rounded-tl-lg text-xs xl:text-sm font-bold">
                 TRAILER
               </div>
             </div>
           </div>
 
           {isPlaying && (
-            <div className="fixed inset-0 mt-10 bg-black/60 z-50 flex items-center justify-center">
-              <div className="relative w-full h-[590px] max-w-[1050px]">
+            <div className="fixed inset-0 xl:-mt-10 md:-mt-60 mt-190 bg-black/60 z-50 flex items-center justify-center">
+              <div className="relative w-full md:h-[394px] xl:h-[590px] md:max-w-[700px] xl:max-w-[1050px]">
                 <iframe
                   width="100%"
                   height="100%"
@@ -51,7 +51,7 @@ export default function TrailerPlayer({ youtubeId }) {
 
                 <button
                   onClick={() => setIsPlaying(false)}
-                  className="absolute -top-12 right-0 bg-black text-white px-1 py-1 rounded-full hover:bg-purple-700 transition-colors"
+                  className="absolute -top-9 right-0 bg-black text-white px-1 py-1 rounded-full hover:bg-purple-700 transition-colors"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -3,8 +3,15 @@
 import { useState, useEffect } from "react";
 import CharacterCard from "@/app/components/AnimeDetails/Character";
 import { FaRegCalendar } from "react-icons/fa";
+import Link from "next/link";
 
-const ContentTabs = ({ episodes, characters, staff }) => {
+const ContentTabs = ({
+  episodes,
+  characters,
+  staff,
+  crunchyrollId,
+  animeTitle,
+}) => {
   const [activeTab, setActiveTab] = useState("Episodes");
   const [episodesToShow, setEpisodesToShow] = useState(12);
   const [charactersToShow, setCharactersToShow] = useState(12);
@@ -87,14 +94,14 @@ const ContentTabs = ({ episodes, characters, staff }) => {
   return (
     <div className="relative z-10 bg-black py-4">
       <div className="container mx-auto px-4">
-        <div className="flex flex-wrap gap-2 mb-8 justify-center">
+        <div className="flex flex-wrap gap-2 mb-6 justify-center">
           {["Episodes", "Characters", "Voice Actors", "Staff"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 activeTab === tab
-                  ? "bg-purple-600 text-lg font-semibold text-white"
+                  ? "bg-purple-600 md:text-xs  xl:text-lg font-semibold text-white"
                   : "g-gray-800/10 font-semibold hover:text-white text-gray-300"
               }`}
             >
@@ -105,7 +112,7 @@ const ContentTabs = ({ episodes, characters, staff }) => {
         </div>
 
         {activeTab === "Episodes" && (
-          <div className="grid  grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 xl:gap-3">
             {episodes.slice(0, episodesToShow).map((episode) => {
               const formattedDate = episode.aired
                 ? new Date(episode.aired).toLocaleDateString("en-US", {
@@ -115,26 +122,41 @@ const ContentTabs = ({ episodes, characters, staff }) => {
                   })
                 : "-";
 
+              const episodeSlug = episode.title
+                .toLowerCase()
+                .replace(/\s+/g, "-")
+                .replace(/[^\w\-]+/g, "");
+
+              let crunchyrollUrl = `https://www.crunchyroll.com/search?q=${encodeURIComponent(
+                animeTitle + " " + episode.number
+              )}`;
+              if (crunchyrollId) {
+                crunchyrollUrl = `https://www.crunchyroll.com/id/watch/${crunchyrollId}/${episodeSlug}`;
+              }
+
               return (
-                <div
+                <Link
                   key={episode.mal_id}
-                  className="bg-gray-800 p-4 rounded-lg flex flex-col justify-between"
+                  href={crunchyrollUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors"
                 >
-                  <h3 className="text-white font-medium">
+                  <h3 className="text-white text-sm xl:text-lg font-medium">
                     Episode {episode.number}: {episode.title}
                   </h3>
                   <div className="flex items-center gap-1 text-gray-400 text-sm mt-2">
                     <FaRegCalendar size={14} />
                     <span>{formattedDate}</span>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>
         )}
 
         {activeTab === "Characters" && (
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-6">
             {characters.slice(0, charactersToShow).map((character) => (
               <CharacterCard
                 key={character.mal_id}
@@ -148,7 +170,7 @@ const ContentTabs = ({ episodes, characters, staff }) => {
         )}
 
         {activeTab === "Voice Actors" && (
-          <div className="grid  grid-cols-3 md:grid-cols-6 gap-6">
+          <div className="grid  grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-6">
             {voiceActors.slice(0, voiceActorsToShow).map((va) => {
               const roleType = va.role?.toLowerCase();
 
@@ -157,7 +179,7 @@ const ContentTabs = ({ episodes, characters, staff }) => {
                   key={va.id}
                   className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors"
                 >
-                  <div className="relative aspect-square">
+                  <Link href="/va-detail" className="relative aspect-square">
                     <img
                       src={va.image}
                       alt={va.name}
@@ -182,7 +204,7 @@ const ContentTabs = ({ episodes, characters, staff }) => {
                         as {va.character}
                       </span>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               );
             })}
@@ -190,7 +212,7 @@ const ContentTabs = ({ episodes, characters, staff }) => {
         )}
 
         {activeTab === "Staff" && (
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-6">
             {staff.slice(0, staffToShow).map((member) => (
               <div
                 key={member.mal_id}

@@ -19,21 +19,20 @@ const ShareButtons = ({ title, description, imageUrl, url, siteName }) => {
   const encodedImage = encodeURIComponent(imageUrl);
 
   const sharePlatforms = [
-    // Facebook
     {
       name: "Facebook",
       icon: <FaFacebook />,
       color: "bg-[#1877f2] hover:bg-[#166fe5]",
       url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedTitle}%0A%0A${encodedDescription}&hashtag=%23AniMangaListo`,
     },
-    // Twitter
+
     {
       name: "Twitter",
       icon: <FaTwitter />,
       color: "bg-[#1da1f2] hover:bg-[#1991db]",
       url: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}%0A%0A${encodedDescription}%0A%0A${encodedUrl}`,
     },
-    // WhatsApp
+
     {
       name: "WhatsApp",
       icon: <FaWhatsapp />,
@@ -65,8 +64,8 @@ const ShareButtons = ({ title, description, imageUrl, url, siteName }) => {
 
   return (
     <div className="mb-6">
-      <h3 className="text-lg font-semibold mb-3">Share this Anime</h3>
-      <div className="flex flex-wrap gap-2">
+      <h3 className="text-base font-semibold mb-3">Share this Anime</h3>
+      <div className="flex xl:text-sm text-xs flex-wrap gap-2">
         <button
           onClick={copyToClipboard}
           className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded transition-colors"
