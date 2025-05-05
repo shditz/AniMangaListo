@@ -102,6 +102,7 @@ async function getCombinedData() {
       topCharacters: getData(13),
       mostPopular: getData(14).slice(0, 10),
       mostFavorited: getData(16).slice(0, 10),
+      upcomingAnime: getData(15).slice(0, 12) || [],
       trailers: {
         popular: getData(14),
         topAnime: getData(3),
@@ -111,7 +112,6 @@ async function getCombinedData() {
         topUpcomingTl: getData(15),
         favorited: getData(16),
       },
-      upcomingAnime: getData(15).slice(0, 12) || [],
     };
   } catch (error) {
     console.error("Error fetching combined data:", error);
