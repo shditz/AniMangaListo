@@ -58,11 +58,10 @@ async function getCombinedData() {
     "seasons/now?limit=20",
     "watch/episodes",
     "anime?status=complete&order_by=end_date&sort=desc&limit=22&type=tv",
-    "top/anime?limit=10",
-    "top/anime?limit=11&type=movie",
-    "top/anime?limit=11&filter=airing&type=tv",
-    "anime?type=tv&limit=10",
-    "seasons/now?limit=10",
+    "top/anime?limit=21",
+    "top/anime?limit=17&type=movie",
+    "top/anime?limit=21&filter=airing&type=tv",
+    "seasons/now?limit=17",
     "manga?limit=10",
     "top/manga?limit=10&type=manga",
     "top/manga?limit=10&filter=publishing&type=manga",
@@ -71,12 +70,8 @@ async function getCombinedData() {
     "top/manga?filter=favorite&limit=10",
     "top/characters?limit=10",
     "top/anime?filter=bypopularity&limit=17",
-    "top/anime?limit=21",
-    "top/anime?limit=18&type=movie",
-    "top/anime?limit=21&filter=airing&type=tv",
     "seasons/upcoming?limit=20",
     "top/anime?limit=20&filter=favorite",
-    "seasons/now?limit=17",
   ];
 
   try {
@@ -93,27 +88,30 @@ async function getCombinedData() {
       currentSeason: getData(0),
       recentEpisodes: getData(1),
       latestCompleted: getData(2),
-      topAnime: getData(3),
-      topMovie: getData(4),
-      topAiring: getData(5),
+      topAnime: getData(3).slice(0, 10),
+      topMovie: getData(4).slice(0, 11),
+      topAiring: getData(5).slice(0, 11),
       allAnime: getData(6),
-      seasonalAnime: getData(7),
-      allManga: getData(8),
-      topManga: getData(9),
-      topPublishing: getData(10),
-      topUpcomingManga: getData(11),
-      mostPopularManga: getData(12),
-      mostFavoritedManga: getData(13),
-      topCharacters: getData(14),
+      seasonalAnime: getData(6).slice(0, 10),
+      allManga: getData(7),
+      topManga: getData(8),
+      topPublishing: getData(9),
+      topUpcomingManga: getData(10),
+      mostPopularManga: getData(11),
+      mostFavoritedManga: getData(12),
+      topCharacters: getData(13),
+      mostPopular: getData(14).slice(0, 10),
+      mostFavorited: getData(16).slice(0, 10),
       trailers: {
-        popular: getData(15),
-        topAnime: getData(16),
-        seasonalAnime: getData(21).slice(0, 17) || [],
-        movieTl: getData(17),
-        topAiringTl: getData(18),
-        topUpcomingTl: getData(19),
-        favorited: getData(20),
+        popular: getData(14),
+        topAnime: getData(3),
+        seasonalAnime: getData(6),
+        movieTl: getData(4),
+        topAiringTl: getData(5),
+        topUpcomingTl: getData(15),
+        favorited: getData(16),
       },
+      upcomingAnime: getData(15).slice(0, 12) || [],
     };
   } catch (error) {
     console.error("Error fetching combined data:", error);
@@ -150,13 +148,12 @@ export default async function Home() {
 
       <Suspense fallback="Load Anime Content...">
         <DynamicSection
-          mostPopularData={data.topAnime || []}
-          mostFavoritedData={data.topAnime || []}
+          mostPopularData={data.mostPopular || []}
+          mostFavoritedData={data.mostFavorited || []}
           topAiringData={data.topAiring || []}
           topAnimeData={data.topAnime || []}
           topMovieData={data.topMovie || []}
-          allAnime={data.allAnime || []}
-          upcomingData={data.seasonalAnime || []}
+          upcomingData={data.upcomingAnime || []}
           seasonalAnimeData={data.seasonalAnime || []}
         />
       </Suspense>

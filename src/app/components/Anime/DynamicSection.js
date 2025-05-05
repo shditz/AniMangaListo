@@ -10,21 +10,13 @@ const DynamicSection = ({
   topAiringData,
   topAnimeData,
   topMovieData,
-  allAnime,
   upcomingData,
   seasonalAnimeData,
 }) => {
-  const [selectedType, setSelectedType] = useState("allanime");
+  const [selectedType, setSelectedType] = useState("seasonalanime");
   const [isOpen, setIsOpen] = useState(false);
 
   const typeOptions = [
-    {
-      value: "allanime",
-      label: "All Anime",
-      data: allAnime || [],
-      linkHref: "/",
-    },
-
     {
       value: "seasonalanime",
       label: "Seasonal Anime",
