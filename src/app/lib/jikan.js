@@ -1,7 +1,7 @@
 import { delay } from "./utils";
 
 const JIKAN_BASE_URL = "https://api.jikan.moe/v4";
-const RATE_LIMIT_DELAY = 2000;
+const RATE_LIMIT_DELAY = 1000;
 
 export const fetchJikan = async (endpoint) => {
   await delay(RATE_LIMIT_DELAY);
