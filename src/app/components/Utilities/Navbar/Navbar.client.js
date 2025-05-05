@@ -230,17 +230,58 @@ const NavbarClient = ({ dropdownLinks }) => {
                 {renderDropdownLinks("manga")}
               </div>
             </div>
-            {dropdownLinks.staticLinks.map(({ href, text }) => (
-              <Link
-                key={href}
-                href={href}
-                className={`${
-                  isActivePath(href) ? "text-purple-500" : "text-white"
-                } hover:text-purple-300 transition duration-300`}
-              >
-                {text}
-              </Link>
-            ))}
+            {dropdownLinks.staticLinks.map(({ href, text }) => {
+              if (text === "Genre") {
+                return (
+                  <div
+                    key={href}
+                    className="relative dropdown-group"
+                    ref={(el) => (dropdownRefs.current.genre = el)}
+                    onMouseEnter={() => handleDropdownHover("genre", true)}
+                    onMouseLeave={() => handleDropdownHover("genre", false)}
+                  >
+                    <button className="flex items-center text-white hover:text-purple-500 transition duration-300 focus:outline-none">
+                      Genre
+                      <DropdownChevron isActive={activeDropdown === "genre"} />
+                    </button>
+                    <div
+                      className={`absolute mt-1 w-48 bg-black/80 backdrop-blur-md rounded-lg shadow-lg text-lg transition-all duration-300 origin-top ${
+                        activeDropdown === "genre"
+                          ? "opacity-100 translate-y-0"
+                          : "opacity-0 -translate-y-2 pointer-events-none"
+                      }`}
+                      onMouseEnter={() => setActiveDropdown("genre")}
+                      onMouseLeave={() => setActiveDropdown(null)}
+                    >
+                      <Link
+                        href="/genres"
+                        className="block px-4 py-2 text-white hover:bg-purple-800/40"
+                      >
+                        Anime
+                      </Link>
+                      <Link
+                        href="/genresmanga"
+                        className="block px-4 py-2 text-white hover:bg-purple-800/40"
+                      >
+                        Manga
+                      </Link>
+                    </div>
+                  </div>
+                );
+              } else {
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`${
+                      isActivePath(href) ? "text-purple-500" : "text-white"
+                    } hover:text-purple-300 transition duration-300`}
+                  >
+                    {text}
+                  </Link>
+                );
+              }
+            })}
           </div>
 
           <div className="hidden item-center relative group md:flex">
@@ -386,18 +427,60 @@ const NavbarClient = ({ dropdownLinks }) => {
                 )}
               </div>
 
-              {dropdownLinks.staticLinks.map(({ href, text }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`${
-                    isActivePath(href) ? "text-purple-500" : "text-white"
-                  } block rounded-md text-base font-medium`}
-                  onClick={() => toggleMobileState("menu", false)}
-                >
-                  {text}
-                </Link>
-              ))}
+              {dropdownLinks.staticLinks.map(({ href, text }) => {
+                if (text === "Genre") {
+                  return (
+                    <div
+                      key={href}
+                      className="flex flex-col pt-3 dropdown-group"
+                    >
+                      <button
+                        onClick={() =>
+                          toggleMobileState(
+                            "dropdown",
+                            mobileStates.dropdown === "genre" ? null : "genre"
+                          )
+                        }
+                        className="flex items-center justify-between font-semibold text-white text-base hover:text-purple-300"
+                      >
+                        Genre
+                        <DropdownChevron
+                          isActive={mobileStates.dropdown === "genre"}
+                        />
+                      </button>
+                      {mobileStates.dropdown === "genre" && (
+                        <div className="ml-4 mt-2 space-y-3">
+                          <Link
+                            href="/genres"
+                            className="block text-gray-200 font-medium text-sm"
+                          >
+                            Anime
+                          </Link>
+                          <Link
+                            href="/genresmanga"
+                            className="block text-gray-200 font-medium text-sm"
+                          >
+                            Manga
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  );
+                } else {
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={`${
+                        isActivePath(href) ? "text-purple-500" : "text-white"
+                      } block rounded-md text-base font-medium`}
+                      onClick={() => toggleMobileState("menu", false)}
+                    >
+                      {text}
+                    </Link>
+                  );
+                }
+              })}
             </div>
 
             <div className="p-6 pt-4 border-t border-purple-700">
