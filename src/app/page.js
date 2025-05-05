@@ -1,3 +1,5 @@
+//src/app/page.js
+
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
@@ -66,7 +68,16 @@ async function getCombinedData() {
 
   try {
     const results = await Promise.allSettled(
-      endpoints.map((endpoint) => fetchWithRetry(endpoint))
+      endpoints.map((endpoint) => {
+        const apiUrl = `${
+          process.env.NEXT_PUBLIC_SITE_URL
+        }/api/jikan?endpoint=${encodeURIComponent(endpoint)}`;
+
+        return fetch(apiUrl, { next: { revalidate: 3600 } }).then((res) => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.json();
+        });
+      })
     );
 
     const getData = (index) =>
