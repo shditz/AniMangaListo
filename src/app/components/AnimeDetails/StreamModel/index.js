@@ -19,6 +19,7 @@ export default function StreamModal({ streamingData, title }) {
       "Bahamut Anime Crazy": "/logos/anigamer.jpeg",
       MeWatch: "/logos/mewatch.png",
       "Tubi TV": "/logos/tubitv.jpeg",
+      "Aniplus Asia": "/logos/aniplusasia.png",
     };
     return logos[name] || "/logos/default.png";
   };

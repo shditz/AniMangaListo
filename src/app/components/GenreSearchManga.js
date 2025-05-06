@@ -137,7 +137,7 @@ export default function GenreSearchMangaClient() {
             </div>
           )}
 
-          <div className="md:p-1 mb-6 bg-white dark:bg-gray-800/10 rounded-lg shadow-md">
+          <div className="md:p-1 mb-6 dark:bg-gray-800/10 rounded-lg shadow-md">
             <h2 className="md:text-2xl text-lg font-semibold mb-3">
               Discover Manga by Genre
             </h2>
