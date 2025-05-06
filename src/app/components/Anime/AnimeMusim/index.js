@@ -146,7 +146,7 @@ export default function AnimeCarousel({ animeList }) {
                 ></div>
 
                 {currentSeason && (
-                  <div className="absolute top-1 left-6 md:top-30 pl-4 md:pl-8 md:left-10">
+                  <div className="absolute top-1 left-6 md:top-30 xl:top-23 pl-4 md:pl-8 md:left-10">
                     <span className="bg-purple-600 text-white px-4 py-2 rounded-md text-sm md:text-base font-bold uppercase tracking-wider shadow-lg">
                       {currentSeason}
                     </span>
