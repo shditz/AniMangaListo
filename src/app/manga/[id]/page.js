@@ -1,24 +1,55 @@
-import { fetchWithRetry } from "@/app/lib/jikan";
+// src/app/manga/[id]/page.js
+
+import { Suspense } from "react";
 import MangaDetailContent from "@/app/components/MangaDetails/MangaDetailsContent";
 import { getNames } from "@/app/lib/utils";
 
 export const revalidate = 3600;
-export const dynamicParams = true;
+
+function getBaseUrl() {
+  if (process.env.NODE_ENV === "development") {
+    return "http://localhost:3000";
+  }
+  return `https://${process.env.VERCEL_URL}`;
+}
+
+async function fetchWithProxy(endpoint, retries = 3) {
+  const baseUrl = getBaseUrl();
+  const url = `${baseUrl}/api/jikan?endpoint=${encodeURIComponent(endpoint)}`;
+
+  for (let i = 0; i < retries; i++) {
+    try {
+      const res = await fetch(url, {
+        next: { revalidate: 3600 },
+      });
+
+      if (!res.ok) {
+        if (res.status === 429) {
+          console.warn("Rate limit exceeded, retrying...");
+          await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
+          continue;
+        }
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      return await res.json();
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
+    }
+  }
+}
 
 async function getMangaData(id) {
   try {
-    // Perbaikan: Tambahkan slash (/) sebelum 'full'
-    const mangaRes = await fetchWithRetry(`manga/${id}/full`);
-    const manga = mangaRes?.data || {};
-    const relations = manga.relations || [];
-    const externalLinks = manga.external || [];
+    const mangaData = await fetchWithProxy(`manga/${id}/full`);
+    const manga = mangaData?.data || {};
 
     let characters = [];
-
     try {
-      const charsRes = await fetchWithRetry(`manga/${id}/characters`);
+      const charsData = await fetchWithProxy(`manga/${id}/characters`);
       characters =
-        charsRes?.data?.map((char) => ({
+        charsData?.data?.map((char) => ({
           mal_id: char.character.mal_id,
           name: char.character.name,
           image:
@@ -29,6 +60,9 @@ async function getMangaData(id) {
     } catch (err) {
       console.warn("Failed to fetch characters:", err);
     }
+
+    const relations = manga.relations || [];
+    const externalLinks = manga.external || [];
 
     const alternativeTitles = {
       synonyms: manga.title_synonyms || [],
@@ -58,12 +92,14 @@ async function getMangaData(id) {
       externalLinks,
     };
   } catch (error) {
-    console.error("Error fetching manga data:", error);
+    console.error("Error fetching manga data:", error.message);
     return {
       manga: {},
       characters: [],
       alternativeTitles: {},
       information: {},
+      relations: [],
+      externalLinks: [],
     };
   }
 }
@@ -71,5 +107,9 @@ async function getMangaData(id) {
 export default async function MangaDetailPage({ params }) {
   const { id } = await params;
   const initialData = await getMangaData(id);
-  return <MangaDetailContent id={id} initialData={initialData} />;
+  return (
+    <Suspense fallback="Loading manga details...">
+      <MangaDetailContent id={id} initialData={initialData} />
+    </Suspense>
+  );
 }

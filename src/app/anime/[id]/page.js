@@ -1,24 +1,55 @@
-import { fetchWithRetry } from "@/app/lib/jikan";
+// src/app/anime/[id]/page.js
+
+import { Suspense } from "react";
 import AnimeDetailContent from "@/app/components/AnimeDetails/AnimeDetailContent";
 import { getNames, capitalizeFirstLetter } from "@/app/lib/utils";
 
 export const revalidate = 3600;
-export const dynamicParams = true;
+
+function getBaseUrl() {
+  if (process.env.NODE_ENV === "development") {
+    return "http://localhost:3000";
+  }
+  return `https://${process.env.VERCEL_URL}`;
+}
+
+async function fetchWithProxy(endpoint, retries = 3) {
+  const baseUrl = getBaseUrl();
+  const url = `${baseUrl}/api/jikan?endpoint=${encodeURIComponent(endpoint)}`;
+
+  for (let i = 0; i < retries; i++) {
+    try {
+      const res = await fetch(url, {
+        next: { revalidate: 3600 },
+      });
+
+      if (!res.ok) {
+        if (res.status === 429) {
+          console.warn("Rate limit exceeded, retrying...");
+          await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
+          continue;
+        }
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      return await res.json();
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
+    }
+  }
+}
 
 async function getAnimeData(id) {
   try {
-    const animeRes = await fetchWithRetry(`anime/${id}`);
-    const anime = animeRes?.data || {};
+    const animeData = await fetchWithProxy(`anime/${id}`);
+    const anime = animeData?.data || {};
 
     let streamingData = [];
-    let characters = [];
-    let episodes = [];
-    let staff = [];
-
     try {
-      const streamRes = await fetchWithRetry(`anime/${id}/streaming`);
+      const streamData = await fetchWithProxy(`anime/${id}/streaming`);
       streamingData =
-        streamRes?.data?.map((item) => ({
+        streamData?.data?.map((item) => ({
           name: item.name,
           url: item.url,
         })) || [];
@@ -26,10 +57,11 @@ async function getAnimeData(id) {
       console.warn("Failed to fetch streaming data:", err);
     }
 
+    let characters = [];
     try {
-      const charsRes = await fetchWithRetry(`anime/${id}/characters`);
+      const charsData = await fetchWithProxy(`anime/${id}/characters`);
       characters =
-        charsRes?.data
+        charsData?.data
           ?.filter((char) => char.role && char.character)
           .map((char) => {
             const japaneseVoiceActor = char.voice_actors?.find(
@@ -53,10 +85,11 @@ async function getAnimeData(id) {
       console.warn("Failed to fetch characters:", err);
     }
 
+    let episodes = [];
     try {
-      const episodesRes = await fetchWithRetry(`anime/${id}/episodes`);
+      const episodesData = await fetchWithProxy(`anime/${id}/episodes`);
       episodes =
-        episodesRes?.data?.map((ep) => ({
+        episodesData?.data?.map((ep) => ({
           mal_id: ep.mal_id,
           number: ep.mal_id,
           title: ep.title,
@@ -66,10 +99,11 @@ async function getAnimeData(id) {
       console.warn("Failed to fetch episodes:", err);
     }
 
+    let staff = [];
     try {
-      const staffRes = await fetchWithRetry(`anime/${id}/staff`);
+      const staffData = await fetchWithProxy(`anime/${id}/staff`);
       staff =
-        staffRes?.data?.map((member) => ({
+        staffData?.data?.map((member) => ({
           mal_id: member.person.mal_id,
           name: member.person.name,
           positions: member.positions,
@@ -102,7 +136,7 @@ async function getAnimeData(id) {
       rating: anime.rating || "-",
     };
 
-    const result = {
+    return {
       anime,
       streamingData,
       characters,
@@ -111,10 +145,8 @@ async function getAnimeData(id) {
       alternativeTitles,
       information,
     };
-
-    return result;
   } catch (error) {
-    console.error("Error fetching anime data:", error);
+    console.error("Error fetching anime data:", error.message);
     return {
       anime: {},
       streamingData: [],
@@ -130,5 +162,9 @@ async function getAnimeData(id) {
 export default async function AnimeDetailPage({ params }) {
   const { id } = await params;
   const initialData = await getAnimeData(id);
-  return <AnimeDetailContent id={id} initialData={initialData} />;
+  return (
+    <Suspense fallback="Loading anime details...">
+      <AnimeDetailContent id={id} initialData={initialData} />
+    </Suspense>
+  );
 }
