@@ -1,19 +1,20 @@
 {
   "name": "AniMangaListo",
   "short_name": "AniManga",
+  "description": "AniMangaListo is a comprehensive online platform tailored for anime enthusiasts of all levels — from newcomers exploring the world of Japanese animation to seasoned fans seeking their next favorite series.",
   "icons": [
     {
-      "src": "/public/icon192x192.png",
+      "src": "/icon192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/public/icon.png",
+      "src": "/icon.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/public/appleicon.png",
+      "src": "/appleicon.png",
       "sizes": "180x180",
       "type": "image/png"
     }
@@ -22,5 +23,18 @@
   "background_color": "#ffffff",
   "display": "standalone",
   "start_url": "/",
-  "orientation": "portrait"
+  "orientation": "portrait",
+
+  "screenshots": [
+    {
+      "src": "/screenshot-wide.jpg",
+      "sizes": "1407x720",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshot-narrow.jpg",
+      "sizes": "377x640",
+      "form_factor": "narrow"
+    }
+  ]
 }
