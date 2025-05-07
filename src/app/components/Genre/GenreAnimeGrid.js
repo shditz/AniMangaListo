@@ -6,7 +6,7 @@ import AnimeCard from "./AnimeCard";
 import SkeletonLoader from "./Skelloader";
 import { fetchWithRetry } from "@/app/lib/jikan";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 18;
 
 export default function GenreAnimeGrid({ genreIds, filters }) {
   const seenIdsRef = useRef(new Set());
@@ -89,8 +89,8 @@ export default function GenreAnimeGrid({ genreIds, filters }) {
         <>
           <div className="grid grid-cols-2  xl:grid-cols-6 md:grid-cols-5 gap-3">
             {uniqueAnime.length > 0 ? (
-              uniqueAnime.map((anime) => (
-                <AnimeCard key={anime.mal_id} anime={anime} />
+              uniqueAnime.map((anime, index) => (
+                <AnimeCard key={anime.mal_id} index={index} anime={anime} />
               ))
             ) : (
               <div className="col-span-full text-center py-8 text-gray-300">

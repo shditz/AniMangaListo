@@ -13,6 +13,7 @@ import {
   FaLinkedin,
 } from "react-icons/fa";
 import { debounce } from "lodash-es";
+import InputSearch from "./InputSearch";
 
 const DropdownChevron = ({ isActive }) => (
   <svg
@@ -285,12 +286,7 @@ const NavbarClient = ({ dropdownLinks }) => {
           </div>
 
           <div className="hidden item-center relative group md:flex">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="px-10 py-2 xl:px-12 xl:py-2 bg-transparent border border-purple-400 rounded-full focus:outline-none focus:border-purple-600 group-hover:border-purple-600 transition duration-300 text-sm xl:text-base md:w-50  xl:w-64 text-purple-200 placeholder-purple-300"
-            />
-            <FaSearch className="w-4 h-4 md:w-5 md:h-5 absolute left-3 bottom-3 text-purple-300 transition duration-300 group-hover:text-purple-600" />
+            <InputSearch />
           </div>
 
           <div className="flex items-center  md:hidden space-x-4">
@@ -314,15 +310,7 @@ const NavbarClient = ({ dropdownLinks }) => {
           </div>
         </div>
 
-        {mobileStates.search && (
-          <div className="flex justify-center mt-2 md:hidden">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="px-4 py-2 w-3/4 bg-gray-900/95 border border-purple-500 rounded-full text-purple-200 placeholder-purple-300 focus:outline-none"
-            />
-          </div>
-        )}
+        {mobileStates.search && <InputSearch isMobile />}
       </nav>
 
       {mobileStates.menu && (
