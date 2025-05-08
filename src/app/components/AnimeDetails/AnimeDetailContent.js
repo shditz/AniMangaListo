@@ -119,13 +119,14 @@ export default function AnimeDetailContent({ id, initialData }) {
       <div className="absolute inset-0 bg-black/80" />
 
       <div className="flex flex-col md:flex-row pt-14 relative z-10 backdrop-blur-sm text-white">
-        <div className="w-full  md:w-[200px] xl:w-1/5 p-4 space-y-4">
-          <Image
+        <div className="w-full md:w-[200px] xl:w-1/5 p-4 space-y-4">
+          <img
             src={anime.images?.jpg?.large_image_url || "/placeholder.jpg"}
             alt={anime.title}
-            width={300}
-            height={450}
-            className="w-full h-115 md:h-60 xl:h-96 object-cover rounded-lg select-none mb-4"
+            width="300"
+            height="450"
+            loading="lazy"
+            className="w-full h-[280px] md:h-60 xl:h-96 object-cover rounded-lg select-none mb-4"
           />
 
           <StreamModal streamingData={streamingData} title={anime.title} />
