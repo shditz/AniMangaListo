@@ -24,12 +24,12 @@ export default function RootLayout({ children }) {
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/icon.png" />
+        <link rel="icon" href="/favicon.ico" sizes="16x16" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/icon.png" />
         <link
           rel="icon"
           type="image/png"
-          sizes="16x16"
+          sizes="192x192"
           href="/icon192x192.png"
         />
         <link rel="apple-touch-icon" href="/appleicon.png" />
