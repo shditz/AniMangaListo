@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 
 export default function VoiceActorCard({ voiceActor, rank }) {
@@ -11,7 +10,7 @@ export default function VoiceActorCard({ voiceActor, rank }) {
         className="cursor-pointer relative block group"
       >
         <div className="w-full relative h-[250px] xl:h-[350px]">
-          <Image
+          <img
             src={voiceActor.images?.jpg?.image_url || "/default-avatar.png"}
             alt={voiceActor.name || "Unknown Voice Actor"}
             fill
