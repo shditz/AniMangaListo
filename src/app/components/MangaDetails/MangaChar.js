@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 
 const CharacterCard = ({ image, name, role }) => {
   const [imgSrc, setImgSrc] = useState(image);
@@ -13,13 +12,17 @@ const CharacterCard = ({ image, name, role }) => {
   return (
     <div className="bg-gray-700 rounded-lg overflow-hidden hover:bg-gray-600 transition-colors shadow-lg relative h-full">
       <div className="relative aspect-square">
-        <Image
+        <img
           src={imgSrc}
           alt={name || "Character image"}
-          width={200}
-          height={300}
-          className="w-full h-75 object-cover"
-          onError={() => setImgSrc("/placeholder-character.jpg")}
+          width="200"
+          height="300"
+          loading="lazy"
+          decoding="async"
+          className="w-full h-[300px] md:h-75 object-cover"
+          onError={(e) => {
+            e.currentTarget.src = "/placeholder-character.jpg";
+          }}
         />
 
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-2">
