@@ -3,8 +3,6 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 
-const allowedTypes = ["TV", "Movie", "OVA"];
-
 const CACHE_KEY = "other_anime_cache";
 const TTL = 24 * 60 * 60 * 1000;
 
@@ -26,77 +24,57 @@ export default function OtherAnime() {
           }
         }
       } catch (err) {
-        console.error("Failed to read cache:", err);
+        console.error("Failed:", err);
       }
 
       setLoading(true);
-      const localAnimes = [];
-
-      const isValidAnime = (anime) =>
-        anime &&
-        allowedTypes.includes(anime.type) &&
-        anime.images?.jpg?.image_url;
-
-      const processAnime = (animeData) => {
-        if (isValidAnime(animeData)) {
-          localAnimes.push(animeData);
-          if (localAnimes.length >= 25) {
-            setRandomAnime([...localAnimes]);
-            setLoading(false);
-          }
-        }
-      };
-
-      const fetchPromises = Array.from({ length: 15 }, () =>
-        fetch("https://api.jikan.moe/v4/random/anime")
-          .then((res) => res.json())
-          .then((data) => {
-            processAnime(data.data);
-          })
-          .catch((err) => {
-            console.error("Fetch error:", err);
-          })
-      );
-
-      await Promise.allSettled(fetchPromises);
-
-      if (localAnimes.length > 0) {
-        setRandomAnime(localAnimes);
-      }
 
       try {
-        localStorage.setItem(
-          CACHE_KEY,
-          JSON.stringify({
-            data: localAnimes,
-            timestamp: Date.now(),
-          })
+        const res = await fetch(
+          "https://api.jikan.moe/v4/top/anime?filter=bypopularity&limit=10"
         );
-      } catch (err) {
-        console.error("Failed to save to cache:", err);
-      }
+        const result = await res.json();
 
-      setLoading(false);
+        const filtered = result.data
+          .filter((anime) => anime.images?.jpg?.image_url)
+          .slice(0, 10);
+
+        if (filtered.length > 0) {
+          setRandomAnime(filtered);
+
+          try {
+            localStorage.setItem(
+              CACHE_KEY,
+              JSON.stringify({
+                data: filtered,
+                timestamp: Date.now(),
+              })
+            );
+          } catch (err) {
+            console.error("Failed to cache:", err);
+          }
+        } else {
+          setError("Anime Not Found ");
+        }
+      } catch (err) {
+        setError("Failed Load Anime");
+        console.error("Error fetch:", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
   }, []);
 
   if (loading)
-    return (
-      <div className="text-purple-400 p-4 text-center">Loading Anime...</div>
-    );
+    return <div className="text-purple-400 p-4 text-center">Load Anime...</div>;
 
-  if (error)
-    return (
-      <div className="text-red-500 p-4 text-center">
-        Error loading recommendations: {error}
-      </div>
-    );
+  if (error) return <div className="text-red-500 p-4 text-center">{error}</div>;
 
   return (
     <div className="p-4 bg-black/30">
-      <h1 className="md:text-2xl text-xl md:left-0 right-1 font-bold relative inline-block mb-4 pb-2">
+      <h1 className="md:text-2xl text-xl font-bold relative inline-block mb-4 pb-2">
         Other Anime
         <span className="absolute bottom-0 left-0 w-full h-1 bg-purple-700"></span>
       </h1>

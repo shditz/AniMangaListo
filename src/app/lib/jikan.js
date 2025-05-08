@@ -1,3 +1,5 @@
+//src/lib/jikan.js
+
 import { delay } from "./utils";
 
 const JIKAN_BASE_URL = "https://api.jikan.moe/v4";
@@ -26,23 +28,25 @@ export const fetchJikan = async (endpoint) => {
   return res.json();
 };
 
-export const fetchWithRetry = async (endpoint, retries = 3) => {
+export const fetchWithRetry = async (endpoint, retries = 2) => {
   for (let i = 0; i < retries; i++) {
     try {
-      return await fetchJikan(endpoint);
-    } catch (error) {
-      if (
-        error.message.includes("429") ||
-        error.message.includes("Failed to fetch")
-      ) {
-        if (i < retries - 1) {
-          const backoff = 1000 * Math.pow(2, i);
-          console.log(`Retrying ${endpoint} in ${backoff}ms...`);
-          await delay(backoff);
-          continue;
-        }
+      const res = await fetch(`${JIKAN_BASE_URL}/${endpoint}`, {
+        next: { revalidate: 3600, tags: ["jikan-api"] },
+      });
+
+      if (res.status === 429) {
+        const retryAfter = parseInt(res.headers.get("Retry-After")) || 1;
+        await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
+        continue;
       }
-      throw error;
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      return await res.json();
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
     }
   }
 };

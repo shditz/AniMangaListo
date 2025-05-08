@@ -1,3 +1,5 @@
+//src/api/anime/[id]/route.js
+
 import { fetchWithRetry } from "@/app/lib/jikan";
 import { getNames, capitalizeFirstLetter } from "@/app/lib/utils";
 
