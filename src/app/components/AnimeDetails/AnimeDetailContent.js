@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { parseTheme } from "@/app/lib/themeParser";
 import OtherAnime from "@/app/components/Anime/OtherAnime";
 import AnimeReviews from "../AnimeReview";
+import Loading from "@/app/Loading";
 
 export default function AnimeDetailContent({ id, initialData }) {
   const { data, error, isLoading } = useSWR(`/api/anime/${id}`, fetcher, {
@@ -20,9 +21,7 @@ export default function AnimeDetailContent({ id, initialData }) {
   });
 
   if (isLoading) {
-    return (
-      <div className="text-center text-purple-400 py-20">Load Data...</div>
-    );
+    return <Loading />; // ← Gunakan loader di sini
   }
 
   if (error)

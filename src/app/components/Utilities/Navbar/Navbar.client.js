@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { usePathname } from "next/navigation";
+
 import {
   FaBars,
   FaTimes,
@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import { debounce } from "lodash-es";
 import InputSearch from "./InputSearch";
+import { usePathname, useRouter } from "next/navigation";
 
 const DropdownChevron = ({ isActive }) => (
   <svg
@@ -40,6 +41,8 @@ const SocialIcon = ({ href, color, icon: Icon }) => (
 );
 
 const NavbarClient = ({ dropdownLinks }) => {
+  const router = useRouter(); // Tambahkan ini
+  const [isNavigating, setIsNavigating] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -146,7 +149,6 @@ const NavbarClient = ({ dropdownLinks }) => {
     };
   }, []);
 
-  // Tambahkan handler ini
   const handleInstallClick = () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
@@ -178,13 +180,30 @@ const NavbarClient = ({ dropdownLinks }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [toggleMobileState]);
 
+  const handleNavigation = useCallback(
+    (href) => {
+      if (pathname === href) return; // Prevent redundant navigation
+      setIsNavigating(true);
+      router.push(href);
+    },
+    [router, pathname]
+  );
+
+  useEffect(() => {
+    setIsNavigating(false);
+  }, [pathname]);
+
   const renderDropdownLinks = (type) =>
     dropdownLinks[type].map(({ href, text }) => (
       <Link
         key={href}
         href={href}
         className="block px-4 py-2 text-white hover:bg-purple-800/40"
-        onClick={() => toggleMobileState("menu", false)}
+        onClick={(e) => {
+          e.preventDefault();
+          handleNavigation(href);
+          toggleMobileState("menu", false);
+        }}
       >
         {text}
       </Link>
@@ -218,11 +237,20 @@ const NavbarClient = ({ dropdownLinks }) => {
 
   return (
     <header className="relative select-none">
+      {isNavigating && (
+        <div className="fixed inset-0 z-[9999] flex justify-center items-center bg-black/50 backdrop-blur-sm">
+          <div className="loader"></div>
+        </div>
+      )}
       <nav className={navClasses}>
         <div className="max-w-7xl mx-auto px-4 md:px-5 xl:px-0 flex justify-between items-center w-full">
           <Link
             href="/"
             className="flex-shrink-0 text-white text-xl md:text-2xl font-bold"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavigation("/");
+            }}
           >
             AniMangaListo.
           </Link>
@@ -233,6 +261,10 @@ const NavbarClient = ({ dropdownLinks }) => {
               className={`${
                 isActivePath("/") ? "text-purple-500" : "text-white"
               } hover:text-purple-300 transition duration-300`}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavigation("/");
+              }}
             >
               Home
             </Link>
@@ -325,6 +357,11 @@ const NavbarClient = ({ dropdownLinks }) => {
                     className={`${
                       isActivePath(href) ? "text-purple-500" : "text-white"
                     } hover:text-purple-300 transition duration-300`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavigation(href);
+                      toggleMobileState("menu", false);
+                    }}
                   >
                     {text}
                   </Link>

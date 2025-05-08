@@ -5,6 +5,7 @@ import AnimeSearch from "@/app/components/Anime/AnimeSearch";
 import MangaSearch from "@/app/components/Manga/MangaSearch";
 import Link from "next/link";
 import Header3 from "@/app/components/Header3";
+import Loading from "@/app/Loading";
 
 export default function Page({ params }) {
   const { keyword } = React.use(params);
@@ -26,7 +27,7 @@ export default function Page({ params }) {
   }, [type, keyword]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
