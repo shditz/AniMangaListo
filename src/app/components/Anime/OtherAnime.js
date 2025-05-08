@@ -111,11 +111,8 @@ function AnimeCard({ anime, index }) {
         href={`/anime/${anime.mal_id}`}
         className="relative group transition-transform duration-300 hover:scale-[1.02]"
       >
-        <div className="absolute top-2 left-2 bg-purple-600 text-white px-2 py-1 rounded z-10 text-xs">
-          {anime.type}
-        </div>
         <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded z-10">
-          <span className="text-sm font-semibold">
+          <span className="text-xs md:text-base font-semibold">
             ★ {anime.score || "N/A"}
           </span>
         </div>

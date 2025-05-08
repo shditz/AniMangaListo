@@ -105,7 +105,7 @@ const AnimeReviews = ({ animeId }) => {
               height="48"
               loading="lazy"
               decoding="async"
-              className="rounded-full w-12 h-12 object-cover hover:ring-2 hover:ring-purple-500 transition-all"
+              className="rounded-full md:w-12 md:h-12 w-8 h-8 object-cover hover:ring-2 hover:ring-purple-500 transition-all"
             />
           </Link>
           <div className="flex-1">
@@ -115,7 +115,10 @@ const AnimeReviews = ({ animeId }) => {
               rel="noopener noreferrer"
               className="font-semibold text-purple-300 hover:text-purple-400 transition-colors"
             >
-              {review.user.username}
+              <span className="md:text-base text-sm">
+                {" "}
+                {review.user.username}
+              </span>
             </Link>
             <div className="flex items-center gap-2 text-sm">
               <span className="text-gray-400">
@@ -166,7 +169,7 @@ const AnimeReviews = ({ animeId }) => {
   });
 
   return (
-    <div className="relative z-10 text-white">
+    <div className="relative md:px-4 px-2 z-10 text-white">
       <h2 className="text-2xl flex justify-center font-bold mb-4">
         User Reviews
       </h2>
