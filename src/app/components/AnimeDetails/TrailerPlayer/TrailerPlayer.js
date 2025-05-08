@@ -6,7 +6,7 @@ export default function TrailerPlayer({ youtubeId }) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <div className="w-full md:w-[280px] xl:w-[450px] p-4">
+    <div className="w-full select-none md:w-[280px] xl:w-[450px] p-4">
       {youtubeId ? (
         <>
           <div className="relative aspect-video group">

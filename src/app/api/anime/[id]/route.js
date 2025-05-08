@@ -4,25 +4,73 @@ import { getNames, capitalizeFirstLetter } from "@/app/lib/utils";
 export async function GET(request, { params }) {
   try {
     const { id } = await params;
+
     const [animeRes, streamRes, charsRes, episodesRes, staffRes] =
       await Promise.all([
-        fetchWithRetry(`anime/${id}`),
+        fetchWithRetry(`anime/${id}/full`),
         fetchWithRetry(`anime/${id}/streaming`),
         fetchWithRetry(`anime/${id}/characters`),
         fetchWithRetry(`anime/${id}/episodes`),
         fetchWithRetry(`anime/${id}/staff`),
       ]);
 
-    const anime = animeRes?.data || {};
+    const animeFull = animeRes?.data || {};
+
+    const fetchRelationDetails = async (entry) => {
+      if (!entry?.type || !entry?.mal_id) {
+        return {
+          ...entry,
+          images: { jpg: { image_url: "/placeholder.jpg" } },
+          score: null,
+        };
+      }
+
+      try {
+        const res = await fetchWithRetry(`${entry.type}/${entry.mal_id}`);
+        const imageUrl =
+          res?.data?.images?.jpg?.large_image_url ||
+          res?.data?.images?.jpg?.image_url ||
+          res?.data?.images?.jpg?.small_image_url ||
+          "/placeholder.jpg";
+
+        return {
+          ...entry,
+          name: res?.data?.title || entry.name,
+          images: res?.data?.images || {
+            jpg: { image_url: "/placeholder.jpg" },
+          },
+          score: res?.data?.score ?? null,
+        };
+      } catch (error) {
+        return {
+          ...entry,
+          images: { jpg: { image_url: "/placeholder.jpg" } },
+          score: null,
+        };
+      }
+    };
+
+    const relations = animeFull.relations
+      ? await Promise.all(
+          animeFull.relations.map(async (relation) => ({
+            relation: relation.relation,
+            entry: await Promise.all(relation.entry.map(fetchRelationDetails)),
+          }))
+        )
+      : [];
+
     const streamingData =
       streamRes?.data?.map((item) => ({
         name: item.name,
         url: item.url,
       })) || [];
 
+    const MAX_CHARACTERS = 24;
+
     const characters =
       charsRes?.data
         ?.filter((char) => char.role && char.character)
+        .slice(0, MAX_CHARACTERS)
         .map((char) => {
           const japaneseVoiceActor = char.voice_actors?.find(
             (va) => va.language === "Japanese"
@@ -51,42 +99,56 @@ export async function GET(request, { params }) {
       })) || [];
 
     const staff =
-      staffRes?.data?.map((member) => ({
-        mal_id: member.person.mal_id,
-        name: member.person.name,
-        positions: member.positions,
-        images: member.person.images,
-      })) || [];
+      staffRes?.data
+        ?.map((member) => ({
+          mal_id: member.person.mal_id,
+          name: member.person.name,
+          positions: member.positions,
+          images: member.person.images || {
+            jpg: { image_url: "/placeholder-staff.jpg" },
+          },
+        }))
+        .slice(0, 24) || [];
 
     const alternativeTitles = {
-      synonyms: anime.title_synonyms || [],
-      japanese: anime.title_japanese || null,
-      english: anime.title_english || null,
+      synonyms: animeFull.title_synonyms || [],
+      japanese: animeFull.title_japanese || null,
+      english: animeFull.title_english || null,
     };
 
     const information = {
-      type: anime.type || "-",
-      episodes: anime.episodes ?? "-",
-      status: anime.status || "-",
-      aired: anime.aired?.string || "-",
-      premiered: anime.season ? capitalizeFirstLetter(anime.season) : "-",
-      broadcast: anime.broadcast?.string || "-",
-      producers: getNames(anime.producers),
-      licensors: getNames(anime.licensors),
-      studios: getNames(anime.studios),
-      source: anime.source || "-",
-      genres: getNames(anime.genres),
-      demographics: getNames(anime.demographics),
-      duration: anime.duration || "-",
-      rating: anime.rating || "-",
+      type: animeFull.type || "-",
+      episodes: animeFull.episodes ?? "-",
+      status: animeFull.status || "-",
+      aired: animeFull.aired?.string || "-",
+      premiered: animeFull.season
+        ? capitalizeFirstLetter(animeFull.season)
+        : "-",
+      broadcast: animeFull.broadcast?.string || "-",
+      producers: getNames(animeFull.producers),
+      licensors: getNames(animeFull.licensors),
+      studios: getNames(animeFull.studios),
+      source: animeFull.source || "-",
+      genres: getNames(animeFull.genres),
+      demographics: getNames(animeFull.demographics),
+      duration: animeFull.duration || "-",
+      rating: animeFull.rating || "-",
     };
 
     return Response.json({
-      anime,
+      anime: {
+        ...animeFull,
+
+        images: animeFull.images || {
+          jpg: { large_image_url: "/placeholder.jpg" },
+        },
+        score: animeFull.score || null,
+      },
       streamingData,
       characters,
       episodes,
       staff,
+      relations,
       alternativeTitles,
       information,
     });

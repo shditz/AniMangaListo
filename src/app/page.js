@@ -126,7 +126,7 @@ export default async function Page() {
   const data = await getCombinedData();
 
   return (
-    <div className="overflow-x-hidden md:pt-12 pt-38">
+    <div className="overflow-x-hidden md:pt-12 select-none pt-38">
       <ScrollAnimationWrapper>
         <section className="p-4 mb-8">
           {data.currentSeason?.length > 0 && (

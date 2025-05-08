@@ -63,7 +63,7 @@ const ShareButtons = ({ title, description, imageUrl, url, siteName }) => {
   };
 
   return (
-    <div className="mb-6">
+    <div className="mb-6 select-none">
       <h3 className="text-base font-semibold mb-3">Share this Anime</h3>
       <div className="flex xl:text-sm text-xs flex-wrap gap-2">
         <button

@@ -93,7 +93,7 @@ export default async function MangaPage() {
   const data = await getMangaData();
 
   return (
-    <div className="overflow-x-hidden md:pt-12 pt-38">
+    <div className="overflow-x-hidden select-none md:pt-12 pt-38">
       <ScrollAnimationWrapper>
         <section className="p-4 mb-8">
           {data.mostFavoritedManga?.length > 0 && (

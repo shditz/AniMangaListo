@@ -48,7 +48,7 @@ export default function MangaDetailContent({ id, initialData }) {
           backgroundPosition: "center",
           backgroundAttachment: "fixed",
         }}
-        className="absolute inset-0 h-full w-full"
+        className="absolute select-none inset-0 h-full w-full"
       />
       <div className="absolute inset-0 bg-black/80" />
 
@@ -59,7 +59,7 @@ export default function MangaDetailContent({ id, initialData }) {
             alt={manga.title}
             width={300}
             height={450}
-            className="w-full h-115 md:h-60 xl:h-96 object-cover rounded-lg mb-4"
+            className="w-full select-none h-115 md:h-60 xl:h-96 object-cover rounded-lg mb-4"
           />
 
           {externalLinks.find((link) => link.name === "Official Site") && (
@@ -71,7 +71,7 @@ export default function MangaDetailContent({ id, initialData }) {
                 }
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white text-base"
+                className="text-white select-none text-base"
               >
                 Official Site
               </a>
@@ -158,7 +158,7 @@ export default function MangaDetailContent({ id, initialData }) {
           <h1 className="xl:text-5xl text-2xl md:mt-0 -mt-8 font-bold mb-4">
             {manga.title}
           </h1>
-          <div className="flex xl:text-base text-xs flex-wrap gap-1 xl:gap-2 mb-4">
+          <div className="flex select-none xl:text-base text-xs flex-wrap gap-1 xl:gap-2 mb-4">
             {[
               { label: "★", value: manga.score },
               { value: manga.type },
@@ -214,7 +214,7 @@ export default function MangaDetailContent({ id, initialData }) {
           </div>
 
           <div className="xl:mb-6 mb-3">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap select-none gap-2">
               {manga.genres?.length > 0 ? (
                 manga.genres.map((genre) => (
                   <span

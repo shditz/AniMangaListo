@@ -55,7 +55,7 @@ export default function ContentTabs({ characters, relations }) {
   };
 
   return (
-    <div className="relative z-10 pt-4 bg-black backdrop-blur-sm">
+    <div className="relative z-10 pt-4 select-none bg-black backdrop-blur-sm">
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap gap-2 mb-2 justify-center">
           {["Characters", "Relations"].map((tab) => (

@@ -142,6 +142,22 @@ const NavbarClient = ({ dropdownLinks }) => {
       </Link>
     ));
 
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault(); // Mencegah prompt otomatis muncul
+      window.deferredPrompt = e; // Simpan event untuk digunakan nanti
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      );
+    };
+  }, []);
+
   const SocialLinks = () => (
     <div className="flex space-x-4 justify-center">
       <SocialIcon href="#" color="text-blue-600" icon={FaFacebook} />
@@ -169,7 +185,7 @@ const NavbarClient = ({ dropdownLinks }) => {
   }
 
   return (
-    <header className="relative">
+    <header className="relative select-none">
       <nav className={navClasses}>
         <div className="max-w-7xl mx-auto px-4 md:px-5 xl:px-0 flex justify-between items-center w-full">
           <Link
@@ -470,7 +486,32 @@ const NavbarClient = ({ dropdownLinks }) => {
                 }
               })}
             </div>
-
+            <div className="mt-6">
+              <button
+                id="install-btn"
+                onClick={() => {
+                  if (window.deferredPrompt) {
+                    window.deferredPrompt.prompt();
+                    window.deferredPrompt.userChoice.then(() => {
+                      window.deferredPrompt = null;
+                    });
+                  }
+                }}
+                style={{
+                  display: "none",
+                  backgroundColor: "#800080",
+                  color: "white",
+                  padding: "12px 16px",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  width: "100%",
+                }}
+              >
+                Download Aplikasi
+              </button>
+            </div>
             <div className="p-6 pt-4 border-t border-purple-700">
               <SocialLinks />
             </div>

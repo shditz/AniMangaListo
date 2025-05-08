@@ -8,13 +8,22 @@ import ShareButtons from "./Share";
 import { formatNumber, capitalizeFirstLetter } from "@/app/lib/utils";
 import { fetcher } from "@/app/lib/fetcher";
 import { useEffect, useState } from "react";
+import { parseTheme } from "@/app/lib/themeParser";
+import OtherAnime from "@/app/components/Anime/OtherAnime";
+import AnimeReviews from "../AnimeReview";
 
 export default function AnimeDetailContent({ id, initialData }) {
-  const { data, error } = useSWR(`/api/anime/${id}`, fetcher, {
+  const { data, error, isLoading } = useSWR(`/api/anime/${id}`, fetcher, {
     fallbackData: initialData,
     revalidateOnFocus: true,
     refreshInterval: 300000,
   });
+
+  if (isLoading) {
+    return (
+      <div className="text-center text-purple-400 py-20">Load Data...</div>
+    );
+  }
 
   if (error)
     return (
@@ -31,6 +40,7 @@ export default function AnimeDetailContent({ id, initialData }) {
     episodes = [],
     characters = [],
     staff = [],
+    relations = [],
   } = data;
 
   const englishTitle = alternativeTitles.english || anime.title;
@@ -43,6 +53,56 @@ export default function AnimeDetailContent({ id, initialData }) {
     siteName: "AniMangaListo",
   };
 
+  const ThemeItem = ({ theme }) => {
+    const [rawTitle, artist] = parseTheme(theme);
+    const title = rawTitle.replace(/:/g, "");
+
+    const searchYouTubeMV = () => {
+      const cleanTitle = title
+        .replace(/^\d+\.?\s*/, "")
+        .replace(/^"([^"]+)"\s*/, "$1")
+        .replace(/\s*$(?:eps\s*)?[^)\n]*(?:$[^)\n]*)?/g, "")
+        .split("(")[0]
+        .trim();
+
+      const query = `${cleanTitle} ${artist}`;
+      const encodedQuery = encodeURIComponent(query);
+
+      window.open(
+        `https://www.youtube.com/results?search_query=${encodedQuery}`,
+        "_blank"
+      );
+    };
+
+    return (
+      <div className="flex items-center justify-between bg-gray-900/50 p-2 rounded-md">
+        <div>
+          <p className="font-medium">{title}</p>
+          <p className="text-gray-400 text-xs">{artist || "Unknown Artist"}</p>
+        </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            searchYouTubeMV();
+          }}
+          className="flex items-center gap-1 bg-purple-600 hover:bg-purple-700 text-white text-xs px-2 py-1 rounded-lg"
+        >
+          <span>MV</span>
+        </button>
+      </div>
+    );
+  };
+
+  const SkeletonThemeItem = () => (
+    <div className="flex items-center justify-between bg-gray-800 p-2 rounded-md animate-pulse">
+      <div>
+        <div className="h-4 bg-gray-600 w-32 mb-1"></div>
+        <div className="h-3 bg-gray-600 w-24 rounded"></div>
+      </div>
+      <div className="h-6 w-10 bg-gray-600 rounded"></div>
+    </div>
+  );
+
   return (
     <div className="bg-gray-200 relative">
       <div
@@ -54,7 +114,7 @@ export default function AnimeDetailContent({ id, initialData }) {
           backgroundPosition: "center",
           backgroundAttachment: "fixed",
         }}
-        className="absolute inset-0 h-full w-full"
+        className="absolute inset-0 select-none h-full w-full"
       />
       <div className="absolute inset-0 bg-black/80" />
 
@@ -65,7 +125,7 @@ export default function AnimeDetailContent({ id, initialData }) {
             alt={anime.title}
             width={300}
             height={450}
-            className="w-full h-115 md:h-60 xl:h-96 object-cover rounded-lg mb-4"
+            className="w-full h-115 md:h-60 xl:h-96 object-cover rounded-lg select-none mb-4"
           />
 
           <StreamModal streamingData={streamingData} title={anime.title} />
@@ -157,7 +217,7 @@ export default function AnimeDetailContent({ id, initialData }) {
           <h1 className="xl:text-5xl text-2xl md:mt-0 -mt-8  font-bold mb-4">
             {anime.title}
           </h1>
-          <div className="flex xl:text-base text-xs flex-wrap gap-1 xl:gap-2 mb-4">
+          <div className="flex select-none xl:text-base text-xs flex-wrap gap-1 xl:gap-2 mb-4">
             {[
               { label: "★", value: anime.score },
               { value: anime.type },
@@ -210,7 +270,7 @@ export default function AnimeDetailContent({ id, initialData }) {
             </p>
           </div>
 
-          <div className="xl:mb-6   mb-3">
+          <div className="xl:mb-6 select-none  mb-3">
             <div className="flex flex-wrap gap-2">
               {anime.genres?.length > 0 ? (
                 anime.genres.map((genre) => (
@@ -227,7 +287,7 @@ export default function AnimeDetailContent({ id, initialData }) {
             </div>
           </div>
 
-          <button className="flex gap-1 bg-purple-500 items-center xl:text-base md:text-xs text-sm text-white px-3 py-2 rounded mb-4 hover:bg-purple-700 transition-colors">
+          <button className="flex gap-1 select-none bg-purple-500 items-center xl:text-base md:text-xs text-sm text-white px-3 py-2 rounded mb-4 hover:bg-purple-700 transition-colors">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -261,7 +321,6 @@ export default function AnimeDetailContent({ id, initialData }) {
           <div>
             <TrailerPlayer youtubeId={anime.trailer?.youtube_id} />
           </div>
-
           <div className="md:hidden px-4 ">
             <div className="p-4 bg-black/30 rounded-lg backdrop-blur-sm">
               <h1 className="text-lg  font-semibold relative text-purple-400 inline-block mb-2">
@@ -344,8 +403,7 @@ export default function AnimeDetailContent({ id, initialData }) {
               </div>
             </div>
           </div>
-
-          <div className="xl:w-[450px] mt-2 mb-4 px-4">
+          <div className="xl:w-[450px] mb-2 px-4">
             <div className="p-4 bg-black/30 rounded-lg backdrop-blur-sm">
               <h1 className="text-lg font-semibold relative text-purple-400 inline-block mb-2">
                 Information
@@ -363,6 +421,103 @@ export default function AnimeDetailContent({ id, initialData }) {
               </div>
             </div>
           </div>
+
+          {isLoading || !anime?.theme ? (
+            <div className="mt-4">
+              <div className="p-4 bg-black/30 rounded-lg backdrop-blur-sm">
+                <h1 className="text-lg font-semibold relative text-purple-400 inline-block mb-2">
+                  Theme
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-purple-700"></span>
+                </h1>
+                <div className="space-y-4">
+                  <div>
+                    <h2 className="text-sm font-medium text-purple-300 mb-1">
+                      Opening Theme
+                    </h2>
+                    <ul className="space-y-2">
+                      <li>
+                        <SkeletonThemeItem />
+                      </li>
+                      <li>
+                        <SkeletonThemeItem />
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-medium text-purple-300 mb-1">
+                      Ending Theme
+                    </h2>
+                    <ul className="space-y-2">
+                      <li>
+                        <SkeletonThemeItem />
+                      </li>
+                      <li>
+                        <SkeletonThemeItem />
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="pl-4 xl:pr-0 md:pr-4 pr-4 mb-4 ">
+              <div className="p-4 bg-black/30 rounded-lg backdrop-blur-sm">
+                <h1 className="text-lg font-semibold relative text-purple-400 inline-block mb-2">
+                  Themes
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-purple-700"></span>
+                </h1>
+                <div
+                  className={`space-y-4 gap-4 ${
+                    anime.theme.openings?.length > 0 &&
+                    anime.theme.endings?.length > 0
+                      ? "grid grid-cols-1 "
+                      : "grid grid-cols-1"
+                  }`}
+                >
+                  {anime.theme.openings?.length > 0 && (
+                    <div>
+                      <h2 className="text-sm font-medium text-purple-300 mb-1">
+                        Opening Theme
+                      </h2>
+                      <ul className="space-y-2 text-sm">
+                        {anime.theme.openings
+                          .slice(0, 2)
+                          .map((theme, index) => (
+                            <li key={`opening-${index}`}>
+                              <ThemeItem theme={theme} />
+                            </li>
+                          ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {anime.theme.endings?.length > 0 && (
+                    <div>
+                      <h2 className="text-sm font-medium text-purple-300 mb-1">
+                        Ending Theme
+                      </h2>
+                      <ul className="space-y-2 text-sm">
+                        {anime.theme.endings.slice(0, 2).map((theme, index) => (
+                          <li key={`ending-${index}`}>
+                            <ThemeItem theme={theme} />
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {(!anime.theme.openings ||
+                    anime.theme.openings.length === 0) &&
+                    (!anime.theme.endings ||
+                      anime.theme.endings.length === 0) && (
+                      <p className="text-gray-400 text-sm">
+                        No Theme Available
+                      </p>
+                    )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -370,8 +525,17 @@ export default function AnimeDetailContent({ id, initialData }) {
         episodes={episodes}
         characters={characters}
         staff={staff}
+        relations={relations}
         animeTitle={englishTitle}
       />
+
+      <div className="relative bg-black  z-10   py-2">
+        <AnimeReviews animeId={id} />
+      </div>
+
+      <div className="relative bg-black  z-10   py-2">
+        <OtherAnime />
+      </div>
     </div>
   );
 }

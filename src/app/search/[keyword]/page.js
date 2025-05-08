@@ -30,7 +30,7 @@ export default function Page({ params }) {
   }
 
   return (
-    <div className="overflow-x-hidden md:pt-12 pt-16">
+    <div className="overflow-x-hidden select-none md:pt-12 pt-16">
       <section className="p-4 mb-6">
         <div className="flex justify-center">
           <Header3 title={`Search Result for "${decodedKeyword}"`} />

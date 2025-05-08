@@ -28,7 +28,7 @@ export default function StreamModal({ streamingData, title }) {
     <>
       <button
         onClick={() => setShowModal(true)}
-        className="bg-purple-600 xl:text-base md:text-xs hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full "
+        className="bg-purple-600 xl:text-base md:text-xs select-none hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full "
       >
         Watch Episode
       </button>
@@ -36,7 +36,7 @@ export default function StreamModal({ streamingData, title }) {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 bg-opacity-70 flex md:-top-10 -top-299 items-center md:justify-center z-50">
           <div className="bg-black/85 p-6 rounded-lg max-w-md w-full relative text-white">
-            <h2 className="text-xl mb-2 font-bold ">
+            <h2 className="text-xl select-none mb-2 font-bold ">
               Choose a Streaming Platform to Watch
             </h2>
             <h3 className="mb-2 font-semibold">{title}</h3>
@@ -54,7 +54,7 @@ export default function StreamModal({ streamingData, title }) {
                     <img
                       src={getLogo(platform.name)}
                       alt={platform.name}
-                      className="w-8 h-8 object-contain"
+                      className="w-8 h-8 select-none object-contain"
                     />
                     <span>{platform.name}</span>
                   </a>

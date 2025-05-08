@@ -1,15 +1,16 @@
 "use client";
-
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import CharacterCard from "@/app/components/AnimeDetails/Character";
 import { FaRegCalendar } from "react-icons/fa";
 import Link from "next/link";
+import { capitalizeFirstLetter } from "@/app/lib/utils";
 
 const ContentTabs = ({
   episodes,
   characters,
   staff,
-
+  relations,
   animeTitle,
 }) => {
   const [activeTab, setActiveTab] = useState("Episodes");
@@ -18,6 +19,7 @@ const ContentTabs = ({
   const [voiceActorsToShow, setVoiceActorsToShow] = useState(12);
   const [staffToShow, setStaffToShow] = useState(12);
   const [showAll, setShowAll] = useState(false);
+  const [relationsToShow, setRelationsToShow] = useState(12);
 
   const voiceActors = characters.reduce((acc, character) => {
     if (character.voiceActorData) {
@@ -56,6 +58,11 @@ const ContentTabs = ({
       case "Staff":
         setStaffToShow(showAll ? 12 : staff.length);
         break;
+      case "Related":
+        setRelationsToShow(
+          showAll ? 12 : relations.flatMap((r) => r.entry).length
+        );
+        break;
     }
     setShowAll(!showAll);
   };
@@ -86,29 +93,50 @@ const ContentTabs = ({
         return voiceActors.length > 12;
       case "Staff":
         return staff.length > 12;
+      case "Related":
+        return relations.flatMap((r) => r.entry).length > 12;
       default:
         return false;
     }
   };
 
+  const AnimatedItem = ({ children, index }) => {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -30 }}
+        transition={{
+          duration: 0.3,
+          delay: index * 0.03,
+          ease: "easeOut",
+        }}
+      >
+        {children}
+      </motion.div>
+    );
+  };
+
   return (
-    <div className="relative z-10 bg-black py-4">
-      <div className="container mx-auto px-4">
+    <div className="relative z-10 select-none bg-black py-4">
+      <div className="container px-3 md:px-4 xl:px-0 mx-auto">
         <div className="flex flex-wrap gap-2 mb-6 justify-center">
-          {["Episodes", "Characters", "Voice Actors", "Staff"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 rounded-lg transition-colors ${
-                activeTab === tab
-                  ? "bg-purple-600 md:text-xs  xl:text-lg font-semibold text-white"
-                  : " font-semibold hover:text-white text-gray-300"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-          <div className="h-px   bg-purple-400 w-full mt-1"></div>
+          {["Episodes", "Characters", "Voice Actors", "Staff", "Related"].map(
+            (tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-2 rounded-lg transition-colors ${
+                  activeTab === tab
+                    ? "bg-purple-600 md:text-xs xl:text-lg font-semibold text-white"
+                    : "font-semibold hover:text-white text-gray-300"
+                }`}
+              >
+                {tab}
+              </button>
+            )
+          )}
+          <div className="h-px bg-purple-400 w-full mt-1"></div>
         </div>
 
         {activeTab === "Episodes" && (
@@ -147,107 +175,204 @@ const ContentTabs = ({
           </div>
         )}
 
-        {activeTab === "Characters" && (
-          <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-6">
-            {characters.slice(0, charactersToShow).map((character) => (
-              <CharacterCard
-                key={character.mal_id}
-                image={character.image}
-                name={character.name}
-                role={character.role}
-                voiceActor={character.voiceActor}
-              />
-            ))}
-          </div>
-        )}
-
-        {activeTab === "Voice Actors" && (
-          <div className="grid  grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-6">
-            {voiceActors.slice(0, voiceActorsToShow).map((va) => {
-              const roleType = va.role?.toLowerCase();
-
-              return (
-                <div
-                  key={va.id}
-                  className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors"
-                >
-                  <Link href="/va-detail" className="relative aspect-square">
-                    <img
-                      src={va.image}
-                      alt={va.name}
-                      className="w-full h-70 object-cover"
-                      onError={(e) => {
-                        e.target.src = "/placeholder-va.jpg";
-                      }}
-                    />
-
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-2">
-                      <h3 className="text-white font-medium truncate text-sm">
-                        {va.name}
-                      </h3>
-                    </div>
-
-                    <div
-                      className={`absolute top-0 right-0 m-2 px-2 py-1 rounded ${
-                        roleType === "main" ? "bg-green-500" : "bg-yellow-500"
-                      }`}
-                    >
-                      <span className="text-white text-xs font-medium">
-                        as {va.character}
-                      </span>
-                    </div>
-                  </Link>
+        <AnimatePresence mode="wait">
+          {activeTab === "Related" && (
+            <motion.div
+              key="related"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4"
+            >
+              {relations.length === 0 ? (
+                <div className="col-span-full text-center text-gray-400 py-4">
+                  No related anime found
                 </div>
-              );
-            })}
-          </div>
-        )}
+              ) : (
+                relations
+                  .flatMap((relation) =>
+                    relation.entry
+                      .filter((entry) => entry?.mal_id)
+                      .map((entry) => ({
+                        ...entry,
+                        relationType: relation.relation,
+                      }))
+                  )
+                  .slice(0, relationsToShow)
+                  .map((entry, idx) => {
+                    const imageUrl =
+                      entry.images?.jpg?.image_url || "/placeholder.jpg";
+                    return (
+                      <AnimatedItem
+                        key={`${entry.relationType}-${entry.mal_id}`}
+                        index={idx}
+                      >
+                        <Link
+                          href={`/${entry.type}/${entry.mal_id}`}
+                          className="relative group"
+                        >
+                          <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-700">
+                            <img
+                              src={imageUrl}
+                              alt={entry.name}
+                              className="object-cover w-full h-full"
+                              onError={(e) => {
+                                e.currentTarget.src = "/placeholder.jpg";
+                              }}
+                            />
+                            {entry.score && (
+                              <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded z-10">
+                                <span className="text-sm font-semibold">
+                                  ★ {entry.score.toFixed(1)}
+                                </span>
+                              </div>
+                            )}
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-3">
+                              <h3 className="text-white font-semibold xl:text-base truncate">
+                                {entry.name}
+                              </h3>
+                              <p className="text-purple-300 text-sm mt-1">
+                                {capitalizeFirstLetter(entry.relationType)}
+                              </p>
+                            </div>
+                          </div>
+                        </Link>
+                      </AnimatedItem>
+                    );
+                  })
+              )}
+            </motion.div>
+          )}
 
-        {activeTab === "Staff" && (
-          <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-6">
-            {staff.slice(0, staffToShow).map((member) => (
-              <div
-                key={member.mal_id}
-                className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors"
-              >
-                <div className="relative aspect-square">
-                  <img
-                    src={
-                      member.images?.jpg?.image_url || "/placeholder-staff.jpg"
-                    }
-                    alt={member.name}
-                    className="w-full h-70 object-cover"
-                    onError={(e) => {
-                      e.target.src = "/placeholder-staff.jpg";
-                    }}
+          {activeTab === "Characters" && (
+            <motion.div
+              key="characters"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-6"
+            >
+              {characters.slice(0, charactersToShow).map((character, idx) => (
+                <AnimatedItem key={character.mal_id} index={idx}>
+                  <CharacterCard
+                    image={character.image}
+                    name={character.name}
+                    role={character.role}
+                    voiceActor={character.voiceActor}
                   />
+                </AnimatedItem>
+              ))}
+            </motion.div>
+          )}
 
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-2">
-                    <h3 className="text-white font-medium truncate text-sm">
-                      {member.name}
-                    </h3>
-                  </div>
+          {activeTab === "Voice Actors" && (
+            <motion.div
+              key="voiceactors"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-6"
+            >
+              {voiceActors.slice(0, voiceActorsToShow).map((va, idx) => {
+                const roleType = va.role?.toLowerCase();
+                return (
+                  <AnimatedItem key={va.id} index={idx}>
+                    <div className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors">
+                      <Link
+                        href="/va-detail"
+                        className="relative aspect-square"
+                      >
+                        <img
+                          src={va.image}
+                          alt={va.name}
+                          className="w-full h-70 object-cover"
+                          onError={(e) => {
+                            e.target.src = "/placeholder-va.jpg";
+                          }}
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-2">
+                          <h3 className="text-white font-medium truncate text-sm">
+                            {va.name}
+                          </h3>
+                        </div>
+                        <div
+                          className={`absolute top-0 right-0 m-2 px-2 py-1 rounded ${
+                            roleType === "main"
+                              ? "bg-green-500"
+                              : "bg-yellow-500"
+                          }`}
+                        >
+                          <span className="text-white text-xs font-medium">
+                            as {va.character}
+                          </span>
+                        </div>
+                      </Link>
+                    </div>
+                  </AnimatedItem>
+                );
+              })}
+            </motion.div>
+          )}
 
-                  <div className="absolute top-0 right-0 m-2 px-2 py-1 rounded bg-orange-500">
-                    <span className="text-white text-xs font-medium">
-                      {member.positions?.[0] || "Staff"}
-                    </span>
+          {activeTab === "Staff" && (
+            <motion.div
+              key="staff"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-6"
+            >
+              {staff.slice(0, staffToShow).map((member, idx) => (
+                <AnimatedItem key={member.mal_id} index={idx}>
+                  <div className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors">
+                    <div className="relative aspect-square">
+                      <img
+                        src={
+                          member.images?.jpg?.image_url ||
+                          "/placeholder-staff.jpg"
+                        }
+                        alt={member.name}
+                        className="w-full h-70 object-cover"
+                        onError={(e) => {
+                          e.target.src = "/placeholder-staff.jpg";
+                        }}
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-2">
+                        <h3 className="text-white font-medium truncate text-sm">
+                          {member.name}
+                        </h3>
+                      </div>
+                      <div className="absolute top-0 right-0 m-2 px-2 py-1 rounded bg-orange-500">
+                        <span className="text-white text-xs font-medium">
+                          {member.positions?.[0] || "Staff"}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+                </AnimatedItem>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {shouldShowButton() && (
-          <div className="text-center mt-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="text-center mt-6"
+          >
             <button
               onClick={handleShowMore}
               className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors"
             >
               {showMoreButtonText()}
             </button>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>
