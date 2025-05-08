@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-
-import { fetcher } from "@/app/lib/fetcher";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 
 const allowedTypes = ["TV", "Movie", "OVA"];
+
+const CACHE_KEY = "other_anime_cache";
+const TTL = 24 * 60 * 60 * 1000;
 
 export default function OtherAnime() {
   const [randomAnime, setRandomAnime] = useState([]);
@@ -15,32 +16,67 @@ export default function OtherAnime() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
-
-        const results = await Promise.allSettled(
-          Array.from({ length: 20 }).map(() =>
-            fetcher("https://api.jikan.moe/v4/random/anime")
-          )
-        );
-
-        const successfulAnimes = results
-          .filter((result) => result.status === "fulfilled")
-          .map((result) => result.value.data)
-          .filter(
-            (anime) =>
-              anime &&
-              allowedTypes.includes(anime.type) &&
-              anime.images?.jpg?.image_url
-          )
-          .slice(0, 10);
-
-        setRandomAnime(successfulAnimes);
-        setError(null);
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          if (data && Array.isArray(data) && Date.now() - timestamp < TTL) {
+            setRandomAnime(data);
+            setLoading(false);
+            return;
+          }
+        }
       } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        console.error("Failed to read cache:", err);
       }
+
+      setLoading(true);
+      const localAnimes = [];
+
+      const isValidAnime = (anime) =>
+        anime &&
+        allowedTypes.includes(anime.type) &&
+        anime.images?.jpg?.image_url;
+
+      const processAnime = (animeData) => {
+        if (isValidAnime(animeData)) {
+          localAnimes.push(animeData);
+          if (localAnimes.length >= 25) {
+            setRandomAnime([...localAnimes]);
+            setLoading(false);
+          }
+        }
+      };
+
+      const fetchPromises = Array.from({ length: 15 }, () =>
+        fetch("https://api.jikan.moe/v4/random/anime")
+          .then((res) => res.json())
+          .then((data) => {
+            processAnime(data.data);
+          })
+          .catch((err) => {
+            console.error("Fetch error:", err);
+          })
+      );
+
+      await Promise.allSettled(fetchPromises);
+
+      if (localAnimes.length > 0) {
+        setRandomAnime(localAnimes);
+      }
+
+      try {
+        localStorage.setItem(
+          CACHE_KEY,
+          JSON.stringify({
+            data: localAnimes,
+            timestamp: Date.now(),
+          })
+        );
+      } catch (err) {
+        console.error("Failed to save to cache:", err);
+      }
+
+      setLoading(false);
     };
 
     fetchData();
@@ -108,7 +144,7 @@ function AnimeCard({ anime, index }) {
 
         <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-700">
           <img
-            src={anime.images?.jpg?.image_url || "/placeholder.jpg"}
+            src={anime.images?.jpg?.large_image_url || "/placeholder.jpg"}
             alt={anime.title}
             width={384}
             height={512}
