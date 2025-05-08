@@ -3,6 +3,7 @@
 import { Suspense } from "react";
 import MangaDetailContent from "@/app/components/MangaDetails/MangaDetailsContent";
 import { getNames } from "@/app/lib/utils";
+import Loading from "@/app/Loading";
 
 export const revalidate = 3600;
 
@@ -107,8 +108,9 @@ async function getMangaData(id) {
 export default async function MangaDetailPage({ params }) {
   const { id } = await params;
   const initialData = await getMangaData(id);
+
   return (
-    <Suspense fallback="Loading manga details...">
+    <Suspense fallback={<Loading />}>
       <MangaDetailContent id={id} initialData={initialData} />
     </Suspense>
   );

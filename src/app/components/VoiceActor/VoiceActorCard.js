@@ -1,11 +1,14 @@
 "use client";
 
-import Link from "next/link";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../NavButton"), {
+  ssr: false,
+});
 
 export default function VoiceActorCard({ voiceActor, rank }) {
   return (
     <div className="shadow-xl">
-      <Link
+      <NavButton
         href={`/people/${voiceActor.mal_id}`}
         className="cursor-pointer relative block group"
       >
@@ -29,7 +32,7 @@ export default function VoiceActorCard({ voiceActor, rank }) {
             {voiceActor.name || "Unknown VA"}
           </h3>
         </div>
-      </Link>
+      </NavButton>
     </div>
   );
 }

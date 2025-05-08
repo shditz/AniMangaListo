@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import ScrollAnimationWrapper from "./components/ScrollAnimationWrapper";
 import Loading from "./Loading";
+import NavButton from "./components/NavButtonClient";
 
 const AnimeCarousel = dynamic(() => import("./components/Anime/AnimeMusim"), {
   loading: () => <Loading />,
@@ -221,7 +222,7 @@ export default async function Page() {
             <Header2 title="Recommendation Anime" />
             <RecommendationAnime limit={10} />
             <div className="flex justify-center md:mt-4">
-              <Link
+              <NavButton
                 href="/recommendation-anime"
                 className="inline-flex items-center space-x-2 text-purple-400 hover:text-purple-600 transition-colors bg-transparent"
               >
@@ -234,7 +235,7 @@ export default async function Page() {
                 >
                   <path d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06L17.69 12l-5.72-5.72a.75.75 0 010-1.06z" />
                 </svg>
-              </Link>
+              </NavButton>
             </div>
           </section>
         </Suspense>
@@ -262,7 +263,7 @@ export default async function Page() {
         </Suspense>
 
         <section className="flex justify-center py-8">
-          <Link
+          <NavButton
             href="/mangapage"
             className="inline-flex items-center px-6 py-3  text-base font-medium rounded-md  text-white bg-gradient-to-r from-purple-950 to-purple-600  hover:from-purple-600 hover:to-purple-950  transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
           >
@@ -275,7 +276,7 @@ export default async function Page() {
             >
               <path d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06L17.69 12l-5.72-5.72a.75.75 0 010-1.06z" />
             </svg>
-          </Link>
+          </NavButton>
         </section>
       </ScrollAnimationWrapper>
     </div>

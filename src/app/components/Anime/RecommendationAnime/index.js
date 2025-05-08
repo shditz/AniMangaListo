@@ -3,6 +3,10 @@
 import Link from "next/link";
 import useSWR from "swr";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../../NavButton"), {
+  ssr: false,
+});
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -68,7 +72,7 @@ export default function RecommendationAnime({ limit = 10 }) {
       <div className="grid xl:grid-cols-5 md:grid-cols-5  grid-cols-2 gap-3 md:px-6">
         {allRecommendations.map((anime, index) => (
           <div key={`${anime.mal_id}-${index}`} className="shadow-xl">
-            <Link
+            <NavButton
               href={`/anime/${anime.mal_id}`}
               className="cursor-pointer relative block group"
             >
@@ -90,7 +94,7 @@ export default function RecommendationAnime({ limit = 10 }) {
                   {anime.title}
                 </h3>
               </div>
-            </Link>
+            </NavButton>
           </div>
         ))}
       </div>

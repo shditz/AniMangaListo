@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 
-import Link from "next/link";
 import Header from "../ListAnime/Header";
+const NavButton = dynamic(() => import("../../NavButton"), {
+  ssr: false,
+});
 
 function removeDuplicates(data, key = "mal_id") {
   const seen = new Set();
@@ -157,7 +160,7 @@ const LatestCompleted = ({ data }) => {
                 key={`${anime.mal_id}-${index}`}
                 className="flex-shrink-0 w-[180px] xl:w-[294px] md:w-[148px] left-2 px-2"
               >
-                <Link
+                <NavButton
                   href={`/anime/${anime.mal_id}`}
                   className="cursor-pointer block group"
                 >
@@ -188,7 +191,7 @@ const LatestCompleted = ({ data }) => {
                       </h3>
                     </div>
                   </div>
-                </Link>
+                </NavButton>
               </div>
             ))}
           </div>

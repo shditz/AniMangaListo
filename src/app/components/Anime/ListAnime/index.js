@@ -1,9 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PopularityIcon, FavoriteIcon } from "./Icons";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../../NavButton"), {
+  ssr: false,
+});
 
 const ListAnime = ({ api, metric }) => {
   const [data, setData] = useState(Array.isArray(api) ? api : []);
@@ -37,7 +40,7 @@ const ListAnime = ({ api, metric }) => {
       <div className="grid xl:grid-cols-5 md:grid-cols-5 grid-cols-2 gap-3 px-2 md:px-6 xl:px-10">
         {uniqueData.map((anime, index) => (
           <div key={`${anime.mal_id}-${index}`} className="shadow-xl">
-            <Link
+            <NavButton
               href={`/anime/${anime.mal_id}`}
               className="cursor-pointer relative block group"
             >
@@ -78,7 +81,7 @@ const ListAnime = ({ api, metric }) => {
                   {anime.title}
                 </h3>
               </div>
-            </Link>
+            </NavButton>
           </div>
         ))}
       </div>

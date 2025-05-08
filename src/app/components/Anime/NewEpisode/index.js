@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from "react";
 
-import Link from "next/link";
 import Header from "../ListAnime/Header";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../../NavButton"), {
+  ssr: false,
+});
 
 async function fetchEpisodes() {
   const res = await fetch("https://api.jikan.moe/v4/watch/episodes", {
@@ -195,7 +198,7 @@ const NewEpisodesSection = ({ data: initialData }) => {
                   key={`${anime.entry.mal_id}-${index}`}
                   className="flex-shrink-0 w-[180] xl:w-[294.5px] md:w-[148px] left-2 px-2"
                 >
-                  <Link
+                  <NavButton
                     href={`/anime/${anime.entry.mal_id}`}
                     className="cursor-pointer relative block group"
                   >
@@ -226,7 +229,7 @@ const NewEpisodesSection = ({ data: initialData }) => {
                         </h3>
                       </div>
                     </div>
-                  </Link>
+                  </NavButton>
                 </div>
               );
             })}

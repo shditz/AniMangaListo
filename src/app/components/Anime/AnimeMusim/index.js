@@ -1,6 +1,10 @@
 "use client";
-import Link from "next/link";
+
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../../NavButton"), {
+  ssr: false,
+});
 
 const formatNumber = (number) => {
   return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -203,12 +207,12 @@ export default function AnimeCarousel({ animeList }) {
                     </p>
 
                     {anime.synopsis?.length > 300 && (
-                      <Link
+                      <NavButton
                         href={`/anime/${anime.mal_id}`}
                         className="text-purple-500 hover:text-purple-500 md:text-lg text-sm font-semibold block"
                       >
                         Read More →
-                      </Link>
+                      </NavButton>
                     )}
                   </div>
                 </div>
@@ -263,7 +267,7 @@ export default function AnimeCarousel({ animeList }) {
                 </div>
 
                 <div className="flex items-center gap-4 md:gap-8 md:pt-2 ">
-                  <Link
+                  <NavButton
                     href={`/anime/${anime.mal_id}`}
                     className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-3 py-2 md:px-4 md:py-2 rounded-lg flex items-center gap-1 text-xs md:text-lg"
                   >
@@ -281,7 +285,7 @@ export default function AnimeCarousel({ animeList }) {
                       <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
-                  </Link>
+                  </NavButton>
                   <button className="text-purple-400 font-medium hover:bg-purple-600 hover:text-white flex items-center gap-1 text-sm md:text-lg px-3 py-1 md:px-4 md:py-2 rounded-lg">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

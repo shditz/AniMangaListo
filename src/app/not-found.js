@@ -1,4 +1,5 @@
-import Link from "next/link";
+import dynamic from "next/dynamic";
+import NavButton from "./components/NavButtonClient";
 
 export default function NotFound() {
   return (
@@ -12,12 +13,12 @@ export default function NotFound() {
           Oops! The page you are looking for may have been removed, replaced, or
           is no longer available.
         </p>
-        <Link
+        <NavButton
           href="/"
           className="inline-block px-6 py-3 bg-gradient-to-r from-black to-purple-600 rounded-lg font-semibold hover:from-purple-700 hover:to-black transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
         >
           Back to Home
-        </Link>
+        </NavButton>
       </div>
 
       <div className="mt-10 opacity-70">

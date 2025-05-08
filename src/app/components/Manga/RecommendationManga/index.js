@@ -1,8 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import useSWR from "swr";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../../NavButton"), {
+  ssr: false,
+});
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -68,7 +71,7 @@ export default function RecommendationManga({ limit = 10 }) {
       <div className="grid md:grid-cols-5 grid-cols-2 gap-3 md:px-6">
         {allRecommendations.map((manga, index) => (
           <div key={`${manga.mal_id}-${index}`} className="shadow-xl">
-            <Link
+            <NavButton
               href={`/manga/${manga.mal_id}`}
               className="cursor-pointer relative block group"
             >
@@ -90,7 +93,7 @@ export default function RecommendationManga({ limit = 10 }) {
                   {manga.title}
                 </h3>
               </div>
-            </Link>
+            </NavButton>
           </div>
         ))}
       </div>

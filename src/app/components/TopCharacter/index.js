@@ -1,9 +1,11 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FavoriteIcon } from "../Anime/ListAnime/Icons";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../NavButton"), {
+  ssr: false,
+});
 
 const TopCharacters = ({ data }) => {
   const [internalData, setInternalData] = useState(
@@ -17,7 +19,7 @@ const TopCharacters = ({ data }) => {
 
   useEffect(() => {
     if (Array.isArray(data)) {
-      const normalizedData = data.map((item) => item.node || item); // flatten data
+      const normalizedData = data.map((item) => item.node || item);
       setInternalData(normalizedData);
 
       const cacheData = {
@@ -41,17 +43,19 @@ const TopCharacters = ({ data }) => {
       <div className="grid md:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-3 px-2 md:px-6">
         {uniqueData.map((character, index) => (
           <div key={`${character.mal_id}-${index}`} className="shadow-xl">
-            <Link
+            <NavButton
               href={`/character/${character.mal_id}`}
               className="cursor-pointer relative block group"
             >
-              <div className="w-full relative h-[250px] md:h-[220px] xl:h-[350px]">
-                <Image
+              <div className="w-full relative h-[250px] md:h-[220px] xl:h-[350px] overflow-hidden">
+                <img
                   src={character.images?.jpg?.image_url || "/placeholder.jpg"}
                   alt={character.name || "Unknown Character"}
-                  fill
-                  className="object-cover transition-all duration-300"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  loading="lazy"
+                  decoding="async"
+                  width="100%"
+                  height="100%"
+                  className="object-cover w-full h-full transition-all duration-300"
                 />
               </div>
 
@@ -69,7 +73,7 @@ const TopCharacters = ({ data }) => {
                   {character.name || "Unknown Character"}
                 </h3>
               </div>
-            </Link>
+            </NavButton>
           </div>
         ))}
       </div>

@@ -1,4 +1,7 @@
-import Link from "next/link";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../NavButton"), {
+  ssr: false,
+});
 
 export default function MangaCard({ manga }) {
   const imageUrl =
@@ -7,7 +10,7 @@ export default function MangaCard({ manga }) {
     "/placeholder.jpg";
 
   return (
-    <Link
+    <NavButton
       href={`/manga/${manga.mal_id}`}
       className="group bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow relative block"
     >
@@ -42,6 +45,6 @@ export default function MangaCard({ manga }) {
           </div>
         </div>
       </div>
-    </Link>
+    </NavButton>
   );
 }

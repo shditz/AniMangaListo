@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { FaSearch } from "react-icons/fa";
 
-const InputSearch = ({ isMobile = false }) => {
+const InputSearch = ({ isMobile = false, handleNavigation }) => {
   const searchRef = useRef();
   const router = useRouter();
 
@@ -11,14 +11,20 @@ const InputSearch = ({ isMobile = false }) => {
     event.preventDefault();
     const keyword = searchRef.current.value.trim();
     if (keyword !== "") {
-      router.push(`/search/${encodeURIComponent(keyword)}?type=anime`);
+      const url = `/search/${encodeURIComponent(keyword)}?type=anime`;
+
+      // Pastikan handleNavigation tersedia sebelum dipakai
+      if (typeof handleNavigation === "function") {
+        handleNavigation(url);
+      } else {
+        // Fallback ke router.push jika handleNavigation tidak tersedia
+        router.push(url);
+      }
     }
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      handleSearch(event);
-    }
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSearch(e);
   };
 
   return (

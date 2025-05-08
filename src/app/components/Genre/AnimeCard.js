@@ -1,7 +1,10 @@
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { useInView } from "framer-motion";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../NavButton"), {
+  ssr: false,
+});
 
 export default function AnimeCard({ anime, index }) {
   const ref = useRef(null);
@@ -26,7 +29,7 @@ export default function AnimeCard({ anime, index }) {
         ease: "easeOut",
       }}
     >
-      <Link
+      <NavButton
         href={`/anime/${anime.mal_id}`}
         className="group bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow relative block"
       >
@@ -61,7 +64,7 @@ export default function AnimeCard({ anime, index }) {
             </div>
           </div>
         </div>
-      </Link>
+      </NavButton>
     </motion.div>
   );
 }

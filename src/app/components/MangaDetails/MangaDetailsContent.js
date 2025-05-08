@@ -5,9 +5,10 @@ import Image from "next/image";
 import ContentTabs from "./ContentTabs";
 import { formatNumber, capitalizeFirstLetter } from "@/app/lib/utils";
 import { fetcher } from "@/app/lib/fetcher";
+import Loading from "@/app/Loading";
 
 export default function MangaDetailContent({ id, initialData }) {
-  const { data, error } = useSWR(`/api/manga/${id}`, fetcher, {
+  const { data, error, isLoading } = useSWR(`/api/manga/${id}`, fetcher, {
     fallbackData: initialData,
     revalidateOnFocus: true,
     refreshInterval: 300000,
@@ -19,6 +20,10 @@ export default function MangaDetailContent({ id, initialData }) {
         Failed Load Manga Data, Try Load Again.
       </div>
     );
+
+  if (isLoading || !data) {
+    return <Loading />;
+  }
 
   const {
     manga = {},
