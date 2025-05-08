@@ -70,13 +70,14 @@ const ListManga = ({ api, metric }) => {
               href={`/manga/${manga.mal_id}`}
               className="cursor-pointer relative block group"
             >
-              <div className="w-full relative h-[250px] xl:h-[350px]">
-                <Image
+              <div className="w-full relative h-[250px] md:h-[220px] xl:h-[350px] overflow-hidden">
+                <img
                   src={manga.images?.jpg?.large_image_url || "/placeholder.jpg"}
                   alt={manga.title}
-                  fill
-                  className="object-cover transition-all duration-300"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  loading="lazy"
+                  width="100%"
+                  height="100%"
+                  className="object-cover transition-all duration-300 w-full h-full"
                 />
               </div>
               <div className="absolute text-sm md:text-base font-normal top-2 left-2 bg-purple-900/70 text-white px-2 py-1 rounded">

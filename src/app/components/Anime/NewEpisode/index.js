@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+
 import Link from "next/link";
 import Header from "../ListAnime/Header";
 
@@ -193,36 +193,35 @@ const NewEpisodesSection = ({ data: initialData }) => {
               return (
                 <div
                   key={`${anime.entry.mal_id}-${index}`}
-                  className="flex-shrink-0 w-[180] xl:w-[291.5px] md:w-[197px] left-2 px-2"
+                  className="flex-shrink-0 w-[180] xl:w-[294.5px] md:w-[148px] left-2 px-2"
                 >
                   <Link
                     href={`/anime/${anime.entry.mal_id}`}
                     className="cursor-pointer relative block group"
                   >
                     <div className="relative h-[200px] xl:h-[280px] rounded-lg overflow-hidden bg-gray-900">
-                      <Image
+                      <img
                         src={anime.entry.images.jpg.large_image_url}
                         alt={anime.entry.title}
-                        fill
                         className="object-cover"
                       />
 
                       <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors" />
 
                       <div className="absolute top-2 left-2 flex gap-2">
-                        <div className="font-normal bg-purple-900/70 text-white text-xs md:text-base px-2 py-1 rounded">
+                        <div className="font-normal bg-purple-900/70 text-white text-xs xl:text-base px-2 py-1 rounded">
                           #{index + 1}
                         </div>
                       </div>
 
                       <div className="absolute top-2 right-2 flex gap-2">
-                        <div className="font-normal bg-purple-900/70 text-white text-xs md:text-base px-2 py-1 rounded">
+                        <div className="font-normal bg-purple-900/70 text-white text-xs xl:text-base px-2 py-1 rounded">
                           Eps {episodeNumber}
                         </div>
                       </div>
 
                       <div className="absolute bottom-2 left-2 right-2">
-                        <h3 className="font-medium text-sm md:text-base text-white line-clamp-2">
+                        <h3 className="font-medium text-sm xl:text-base text-white line-clamp-2">
                           {anime.entry.title}
                         </h3>
                       </div>

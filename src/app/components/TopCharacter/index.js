@@ -45,7 +45,7 @@ const TopCharacters = ({ data }) => {
               href={`/character/${character.mal_id}`}
               className="cursor-pointer relative block group"
             >
-              <div className="w-full relative h-[250px] sm:h-[350px]">
+              <div className="w-full relative h-[250px] md:h-[220px] sm:h-[350px]">
                 <Image
                   src={character.images?.jpg?.image_url || "/placeholder.jpg"}
                   alt={character.name || "Unknown Character"}
@@ -55,11 +55,11 @@ const TopCharacters = ({ data }) => {
                 />
               </div>
 
-              <div className="absolute text-sm md:text-base font-normal top-2 left-2 bg-purple-900/70 text-white px-2 py-1 rounded">
+              <div className="absolute text-xs xl:text-base font-normal top-2 left-2 bg-purple-900/70 text-white px-2 py-1 rounded">
                 #{index + 1}
               </div>
 
-              <div className="absolute bg-pink-400 top-2 right-2 text-white text-sm md:text-base px-2 py-1 rounded flex items-center gap-1">
+              <div className="absolute bg-pink-400 top-2 right-2 text-white text-xs xl:text-base px-2 py-1 rounded flex items-center gap-1">
                 <FavoriteIcon className="text-white" />
                 <span>{character.favorites || "???"}</span>
               </div>
