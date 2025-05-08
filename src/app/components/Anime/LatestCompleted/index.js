@@ -155,7 +155,7 @@ const LatestCompleted = ({ data }) => {
             {uniqueData.map((anime, index) => (
               <div
                 key={`${anime.mal_id}-${index}`}
-                className="flex-shrink-0 w-[195px] xl:w-[294px] md:w-[148px] left-2 px-2"
+                className="flex-shrink-0 w-[180px] xl:w-[294px] md:w-[148px] left-2 px-2"
               >
                 <Link
                   href={`/anime/${anime.mal_id}`}
