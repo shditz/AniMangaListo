@@ -24,15 +24,17 @@ const AnimeItem = ({ item, type, index }) => {
     >
       <Link href={`/${type}/${item.mal_id}`}>
         <div className="w-full relative h-[250px] xl:h-[350px] overflow-hidden group cursor-pointer">
-          <Image
+          <img
             src={
               type === "anime"
                 ? item.images.jpg.large_image_url
                 : item.images.jpg.image_url
             }
             alt={item.title}
-            width={500}
-            height={500}
+            width="500"
+            height="500"
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
