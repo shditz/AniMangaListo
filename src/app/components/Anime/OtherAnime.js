@@ -1,7 +1,11 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import Link from "next/link";
+
 import { motion, useInView } from "framer-motion";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../NavButton"), {
+  ssr: false,
+});
 
 const CACHE_KEY = "other_anime_cache";
 const TTL = 24 * 60 * 60 * 1000;
@@ -107,7 +111,7 @@ function AnimeCard({ anime, index }) {
         ease: "easeOut",
       }}
     >
-      <Link
+      <NavButton
         href={`/anime/${anime.mal_id}`}
         className="relative group transition-transform duration-300 hover:scale-[1.02]"
       >
@@ -133,7 +137,7 @@ function AnimeCard({ anime, index }) {
             {anime.title}
           </h3>
         </div>
-      </Link>
+      </NavButton>
     </motion.div>
   );
 }

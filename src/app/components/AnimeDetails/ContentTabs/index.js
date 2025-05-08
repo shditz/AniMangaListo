@@ -5,6 +5,10 @@ import CharacterCard from "@/app/components/AnimeDetails/Character";
 import { FaRegCalendar } from "react-icons/fa";
 import Link from "next/link";
 import { capitalizeFirstLetter } from "@/app/lib/utils";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../../NavButton"), {
+  ssr: false,
+});
 
 const ContentTabs = ({
   episodes,
@@ -208,7 +212,7 @@ const ContentTabs = ({
                         key={`${entry.relationType}-${entry.mal_id}`}
                         index={idx}
                       >
-                        <Link
+                        <NavButton
                           href={`/${entry.type}/${entry.mal_id}`}
                           className="relative group"
                         >
@@ -237,7 +241,7 @@ const ContentTabs = ({
                               </p>
                             </div>
                           </div>
-                        </Link>
+                        </NavButton>
                       </AnimatedItem>
                     );
                   })
@@ -281,7 +285,7 @@ const ContentTabs = ({
                 return (
                   <AnimatedItem key={va.id} index={idx}>
                     <div className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors">
-                      <Link
+                      <NavButton
                         href="/va-detail"
                         className="relative aspect-square"
                       >
@@ -309,7 +313,7 @@ const ContentTabs = ({
                             as {va.character}
                           </span>
                         </div>
-                      </Link>
+                      </NavButton>
                     </div>
                   </AnimatedItem>
                 );

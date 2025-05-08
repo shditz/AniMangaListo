@@ -1,7 +1,6 @@
-// app/components/MangaDetails/MangaDetailContent.js
 "use client";
 import useSWR from "swr";
-import Image from "next/image";
+
 import ContentTabs from "./ContentTabs";
 import { formatNumber, capitalizeFirstLetter } from "@/app/lib/utils";
 import { fetcher } from "@/app/lib/fetcher";

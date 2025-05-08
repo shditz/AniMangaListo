@@ -2,7 +2,11 @@
 import { useState, useEffect } from "react";
 import CharacterCard from "./MangaChar";
 import { capitalizeFirstLetter } from "@/app/lib/utils";
-import Link from "next/link";
+
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../NavButton"), {
+  ssr: false,
+});
 
 export default function ContentTabs({ characters, relations }) {
   const [activeTab, setActiveTab] = useState("characters");
@@ -102,7 +106,7 @@ export default function ContentTabs({ characters, relations }) {
                   )
                   .slice(0, relationsToShow)
                   .map((entry) => (
-                    <Link
+                    <NavButton
                       key={`${entry.relationType}-${entry.mal_id}`}
                       href={`/${entry.type}/${entry.mal_id}`}
                       className="relative group"
@@ -128,7 +132,7 @@ export default function ContentTabs({ characters, relations }) {
                           </div>
                         </div>
                       </div>
-                    </Link>
+                    </NavButton>
                   ))
               ) : (
                 <div className="col-span-full text-center text-gray-400 py-4">

@@ -1,6 +1,10 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../NavButton"), {
+  ssr: false,
+});
 
 const formatNumber = (number) => {
   return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -187,12 +191,12 @@ export default function MangaCarousel({ mangaList }) {
                     </p>
 
                     {manga.synopsis?.length > 300 && (
-                      <Link
+                      <NavButton
                         href={`/manga/${manga.mal_id}`}
                         className="text-purple-500 hover:text-purple-500 md:text-lg text-sm font-semibold block"
                       >
                         Read More →
-                      </Link>
+                      </NavButton>
                     )}
                   </div>
                 </div>
@@ -247,7 +251,7 @@ export default function MangaCarousel({ mangaList }) {
                 </div>
 
                 <div className="flex items-center gap-4 md:gap-8 md:pt-2 ">
-                  <Link
+                  <NavButton
                     href={`/manga/${manga.mal_id}`}
                     className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-3 py-2 md:px-4 md:py-2 rounded-lg flex items-center gap-1 text-xs md:text-lg"
                   >
@@ -265,7 +269,7 @@ export default function MangaCarousel({ mangaList }) {
                       <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
-                  </Link>
+                  </NavButton>
                 </div>
               </div>
             </div>
@@ -273,7 +277,6 @@ export default function MangaCarousel({ mangaList }) {
         })}
       </div>
 
-      {/* Navigation Buttons */}
       <div className="absolute top-1/2 transform -translate-y-1/2 left-1 z-10">
         <button
           onClick={() => handleSlideChange("prev")}
