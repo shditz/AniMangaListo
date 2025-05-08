@@ -48,6 +48,8 @@ const NavbarClient = ({ dropdownLinks }) => {
     search: false,
     dropdown: null,
   });
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isAppInstalled, setIsAppInstalled] = useState(false);
 
   const pathname = usePathname();
   const dropdownRefs = useRef({});
@@ -115,6 +117,52 @@ const NavbarClient = ({ dropdownLinks }) => {
   }, [toggleMobileState]);
 
   useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    const checkIfInstalled = () => {
+      const isStandalone = window.matchMedia(
+        "(display-mode: standalone)"
+      ).matches;
+      if (isStandalone) {
+        setIsAppInstalled(true);
+        setDeferredPrompt(null);
+      }
+    };
+
+    checkIfInstalled();
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", checkIfInstalled);
+
+    return () => {
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      );
+      window.removeEventListener("appinstalled", checkIfInstalled);
+    };
+  }, []);
+
+  // Tambahkan handler ini
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === "accepted") {
+          console.log("User accepted install");
+        } else {
+          console.log("User dismissed install");
+        }
+        setDeferredPrompt(null);
+        setIsAppInstalled(true);
+      });
+    }
+  };
+
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (
         mobileMenuRef.current &&
@@ -141,22 +189,6 @@ const NavbarClient = ({ dropdownLinks }) => {
         {text}
       </Link>
     ));
-
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (e) => {
-      e.preventDefault(); // Mencegah prompt otomatis muncul
-      window.deferredPrompt = e; // Simpan event untuk digunakan nanti
-    };
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-
-    return () => {
-      window.removeEventListener(
-        "beforeinstallprompt",
-        handleBeforeInstallPrompt
-      );
-    };
-  }, []);
 
   const SocialLinks = () => (
     <div className="flex space-x-4 justify-center">
@@ -485,33 +517,18 @@ const NavbarClient = ({ dropdownLinks }) => {
                   );
                 }
               })}
+              {!isAppInstalled && deferredPrompt && (
+                <div className="pt-4">
+                  <button
+                    onClick={handleInstallClick}
+                    className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors duration-300 font-semibold"
+                  >
+                    Install App
+                  </button>
+                </div>
+              )}
             </div>
-            <div className="mt-6">
-              <button
-                id="install-btn"
-                onClick={() => {
-                  if (window.deferredPrompt) {
-                    window.deferredPrompt.prompt();
-                    window.deferredPrompt.userChoice.then(() => {
-                      window.deferredPrompt = null;
-                    });
-                  }
-                }}
-                style={{
-                  display: "none",
-                  backgroundColor: "#800080",
-                  color: "white",
-                  padding: "12px 16px",
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  width: "100%",
-                }}
-              >
-                Download Aplikasi
-              </button>
-            </div>
+
             <div className="p-6 pt-4 border-t border-purple-700">
               <SocialLinks />
             </div>
