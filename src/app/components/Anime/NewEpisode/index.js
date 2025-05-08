@@ -193,7 +193,7 @@ const NewEpisodesSection = ({ data: initialData }) => {
               return (
                 <div
                   key={`${anime.entry.mal_id}-${index}`}
-                  className="flex-shrink-0 w-[180] xl:w-[294.5px] md:w-[148px] left-2 px-2"
+                  className="flex-shrink-0 w-[195px] xl:w-[294.5px] md:w-[148px] left-2 px-2"
                 >
                   <Link
                     href={`/anime/${anime.entry.mal_id}`}

@@ -130,7 +130,7 @@ const TrailerCarousel = ({ data, title }) => {
               return (
                 <div
                   key={`${anime.mal_id}-${index}`}
-                  className="px-0 xl:w-[356px] md:w-[400px] w-[350px]"
+                  className="px-0 xl:w-[356px] md:w-[400px] w-[370px]"
                 >
                   <div
                     className="relative  h-[200px] xl:h-[220px] md:h-[215px] rounded-lg overflow-hidden bg-gray-900 cursor-pointer group"
