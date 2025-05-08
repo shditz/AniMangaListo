@@ -5,7 +5,7 @@ import { fetcher } from "@/app/lib/fetcher";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 
-const allowedTypes = ["TV", "Movie"];
+const allowedTypes = ["TV", "Movie", "OVA"];
 
 export default function OtherAnime() {
   const [randomAnime, setRandomAnime] = useState([]);
@@ -18,7 +18,7 @@ export default function OtherAnime() {
         setLoading(true);
 
         const results = await Promise.allSettled(
-          Array.from({ length: 20 }).map(() =>
+          Array.from({ length: 15 }).map(() =>
             fetcher("https://api.jikan.moe/v4/random/anime")
           )
         );
@@ -108,7 +108,7 @@ function AnimeCard({ anime, index }) {
 
         <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-700">
           <Image
-            src={anime.images?.jpg?.large_image_url || "/placeholder.jpg"}
+            src={anime.images?.jpg?.image_url || "/placeholder.jpg"}
             alt={anime.title}
             fill
             className="object-cover"
