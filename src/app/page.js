@@ -199,7 +199,7 @@ export default async function Page() {
           <RecommendationAnime limit={10} />
           <div className="flex justify-center md:mt-4">
             <Link
-              href="/"
+              href="/recommendation-anime"
               className="inline-flex items-center space-x-2 text-purple-400 hover:text-purple-600 transition-colors bg-transparent"
             >
               <span>View More</span>
@@ -237,7 +237,7 @@ export default async function Page() {
         <section className="flex justify-center py-8">
           <Link
             href="/mangapage"
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors"
+            className="inline-flex items-center px-6 py-3  text-base font-medium rounded-md  text-white bg-gradient-to-r from-purple-950 to-purple-600  hover:from-purple-600 hover:to-purple-950  transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
           >
             Explore All Manga
             <svg

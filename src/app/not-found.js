@@ -2,9 +2,9 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex flex-col justify-center items-center px-6 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-700 via-purple-950 to-black flex flex-col justify-center items-center px-6 text-white">
       <div className="text-center max-w-lg">
-        <h1 className="text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 mb-4">
+        <h1 className="text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 mb-4">
           404
         </h1>
         <h2 className="text-3xl font-bold mb-4">Page Not Found</h2>
@@ -14,7 +14,7 @@ export default function NotFound() {
         </p>
         <Link
           href="/"
-          className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
+          className="inline-block px-6 py-3 bg-gradient-to-r from-black to-purple-600 rounded-lg font-semibold hover:from-purple-700 hover:to-black transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
         >
           Back to Home
         </Link>

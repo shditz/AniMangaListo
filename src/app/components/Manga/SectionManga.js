@@ -5,47 +5,39 @@ import ListManga from "./ListManga";
 import Link from "next/link";
 
 const SectionManga = ({
-  allManga,
   topManga,
   topPublishing,
   topUpcomingManga,
   mostPopularManga,
   mostFavoritedManga,
 }) => {
-  const [selectedType, setSelectedType] = useState("allManga");
+  const [selectedType, setSelectedType] = useState("topManga");
   const [isOpen, setIsOpen] = useState(false);
 
   const typeOptions = [
     {
-      value: "allManga",
-      label: "All Manga",
-      data: allManga || [],
-      linkHref: "/",
-    },
-
-    {
       value: "topManga",
       label: "Top Manga",
       data: topManga || [],
-      linkHref: "/",
+      linkHref: "/top-manga",
     },
     {
       value: "topPublishing",
       label: "Top Publishing",
       data: topPublishing || [],
-      linkHref: "/",
+      linkHref: "/publishing-manga",
     },
     {
       value: "topUpcoming",
       label: "Top Upcoming",
       data: topUpcomingManga || [],
-      linkHref: "/",
+      linkHref: "/tupcoming-manga",
     },
     {
       value: "mostPopularManga",
       label: "Most Popular",
       data: mostPopularManga || [],
-      linkHref: "/",
+      linkHref: "/popular-manga",
       metric: "popularity",
     },
 
@@ -53,7 +45,7 @@ const SectionManga = ({
       value: "mostFavoritedManga",
       label: "Most Favorited",
       data: mostFavoritedManga || [],
-      linkHref: "/",
+      linkHref: "/favorited-manga",
       metric: "favorites",
     },
   ];

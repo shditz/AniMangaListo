@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import TrailerCarousel from "./ListTrailer";
-import Link from "next/link";
 
 const DynamicTrailerSection = ({
   popular,
@@ -20,45 +19,38 @@ const DynamicTrailerSection = ({
       value: "seasonalAnime",
       label: "Seasonal Anime Trailers",
       data: seasonalAnime || [],
-      linkHref: "/",
     },
     {
       value: "topAnime",
       label: "Top Anime Trailers",
       data: topAnime || [],
-      linkHref: "/",
     },
     {
       value: "topMovie",
       label: "Top Movie Trailers",
       data: movieTl || [],
-      linkHref: "/",
     },
     {
       value: "topAiring",
       label: "Top Airing Trailers",
       data: topAiringTl || [],
-      linkHref: "/",
     },
 
     {
       value: "topUpcoming",
       label: "Top Upcoming Trailers",
       data: topUpcomingTl || [],
-      linkHref: "/",
     },
     {
       value: "popular",
       label: "Most Popular Trailers",
       data: popular || [],
-      linkHref: "/",
     },
 
     {
       value: "favorited",
       label: "Most Favorited Trailers",
       data: favorited || [],
-      linkHref: "/",
     },
   ];
 
@@ -140,27 +132,6 @@ const DynamicTrailerSection = ({
         data={selectedOption.data}
         title={selectedOption.label}
       />
-
-      <div className="flex justify-center md:mt-2">
-        <Link
-          href={selectedOption.linkHref}
-          className="inline-flex items-center space-x-2 text-purple-400 hover:text-purple-600 transition-colors"
-        >
-          <span>View More</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="w-5 h-5"
-          >
-            <path
-              fillRule="evenodd"
-              d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06L17.69 12l-5.72-5.72a.75.75 0 010-1.06z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </Link>
-      </div>
     </section>
   );
 };

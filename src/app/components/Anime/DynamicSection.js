@@ -21,7 +21,7 @@ const DynamicSection = ({
       value: "seasonalanime",
       label: "Seasonal Anime",
       data: seasonalAnimeData || [],
-      linkHref: "/",
+      linkHref: "/seasonal-anime",
     },
 
     {
@@ -49,7 +49,7 @@ const DynamicSection = ({
       value: "upcoming",
       label: "Top Upcoming",
       data: upcomingData || [],
-      linkHref: "/",
+      linkHref: "/upcoming-anime",
     },
 
     {

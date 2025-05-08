@@ -41,7 +41,6 @@ async function fetchWithRetry(endpoint, retries = 3) {
 
 async function getMangaData() {
   const endpoints = [
-    "manga?limit=10",
     "top/manga?limit=10&type=manga",
     "top/manga?limit=10&filter=publishing&type=manga",
     "top/manga?filter=upcoming&limit=10",
@@ -75,13 +74,12 @@ async function getMangaData() {
         : [];
 
     return {
-      allManga: getData(0),
-      topManga: getData(1),
-      topPublishing: getData(2),
-      topUpcomingManga: getData(3),
-      mostPopularManga: getData(4),
-      mostFavoritedManga: getData(5).slice(0, 10),
-      FavoritedCarousel: getData(5).slice(0, 20),
+      topManga: getData(0),
+      topPublishing: getData(1),
+      topUpcomingManga: getData(2),
+      mostPopularManga: getData(3),
+      mostFavoritedManga: getData(4).slice(0, 10),
+      FavoritedCarousel: getData(4).slice(0, 20),
     };
   } catch (error) {
     console.error("Error fetching manga data:", error);
@@ -111,7 +109,6 @@ export default async function MangaPage() {
       <ScrollAnimationWrapper>
         <Suspense fallback="Load Manga Content..">
           <SectionManga
-            allManga={data.allManga}
             topManga={data.topManga}
             topPublishing={data.topPublishing}
             topUpcomingManga={data.topUpcomingManga}
