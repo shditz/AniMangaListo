@@ -45,7 +45,7 @@ const TopCharacters = ({ data }) => {
               href={`/character/${character.mal_id}`}
               className="cursor-pointer relative block group"
             >
-              <div className="w-full relative h-[250px] md:h-[220px] sm:h-[350px]">
+              <div className="w-full relative h-[250px] md:h-[220px] xl:h-[350px]">
                 <Image
                   src={character.images?.jpg?.image_url || "/placeholder.jpg"}
                   alt={character.name || "Unknown Character"}
