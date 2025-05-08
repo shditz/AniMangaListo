@@ -54,12 +54,14 @@ export default function MangaDetailContent({ id, initialData }) {
 
       <div className="flex flex-col md:flex-row pt-14 relative z-10 backdrop-blur-sm text-white">
         <div className="w-full md:w-[200px] xl:w-1/5 p-4 space-y-4">
-          <Image
+          <img
             src={manga.images?.jpg?.large_image_url || "/placeholder.jpg"}
             alt={manga.title}
-            width={300}
-            height={450}
-            className="w-full select-none h-115 md:h-60 xl:h-96 object-cover rounded-lg mb-4"
+            width="300"
+            height="450"
+            loading="lazy"
+            decoding="async"
+            className="w-full select-none h-[280px] md:h-60 xl:h-96 object-cover rounded-lg mb-4"
           />
 
           {externalLinks.find((link) => link.name === "Official Site") && (
