@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import useSWR from "swr";
 import { useEffect, useState } from "react";
@@ -74,7 +73,7 @@ export default function RecommendationAnime({ limit = 10 }) {
               className="cursor-pointer relative block group"
             >
               <div className="w-full relative h-[250px] xl:h-[350px]">
-                <Image
+                <img
                   src={anime.images.jpg.large_image_url}
                   alt={anime.title}
                   fill
