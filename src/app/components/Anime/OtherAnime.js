@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import Image from "next/image";
+
 import { fetcher } from "@/app/lib/fetcher";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
@@ -18,7 +18,7 @@ export default function OtherAnime() {
         setLoading(true);
 
         const results = await Promise.allSettled(
-          Array.from({ length: 15 }).map(() =>
+          Array.from({ length: 20 }).map(() =>
             fetcher("https://api.jikan.moe/v4/random/anime")
           )
         );
@@ -107,12 +107,13 @@ function AnimeCard({ anime, index }) {
         </div>
 
         <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-700">
-          <Image
+          <img
             src={anime.images?.jpg?.image_url || "/placeholder.jpg"}
             alt={anime.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 50vw, 20vw"
+            width={384}
+            height={512}
+            loading="lazy"
+            className="object-cover w-full h-full"
           />
         </div>
 
