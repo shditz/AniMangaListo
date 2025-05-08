@@ -1,6 +1,5 @@
 "use client";
 import useSWR from "swr";
-import Image from "next/image";
 import React, { useState, useEffect, useMemo } from "react";
 import { fetcher } from "@/app/lib/fetcher";
 import Link from "next/link";
@@ -99,11 +98,13 @@ const AnimeReviews = ({ animeId }) => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Image
+            <img
               src={review.user.images.jpg.image_url}
               alt={review.user.username}
-              width={48}
-              height={48}
+              width="48"
+              height="48"
+              loading="lazy"
+              decoding="async"
               className="rounded-full w-12 h-12 object-cover hover:ring-2 hover:ring-purple-500 transition-all"
             />
           </Link>
