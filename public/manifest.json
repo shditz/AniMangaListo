@@ -1,7 +1,7 @@
 {
   "name": "AniMangaListo",
   "short_name": "AniMangaListo",
-  "description": "AniMangaListo is a comprehensive online platform tailored for anime enthusiasts of all levels — from newcomers exploring the world of Japanese animation to seasoned fans seeking their next favorite series.",
+  "description": "A platform containing the most comprehensive list of anime",
   "icons": [
     {
       "src": "/icon192x192.png",

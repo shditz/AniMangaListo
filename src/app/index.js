@@ -3,16 +3,20 @@ import { useEffect } from "react";
 export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => {
-      document.querySelector(".splash").style.display = "none";
-      document.querySelector(".main-content").style.display = "block";
-    }, 3000); // Durasi splash screen
+      const splash = document.querySelector(".splash");
+      const main = document.querySelector(".main-content");
+
+      if (splash && main) {
+        splash.style.display = "none";
+        main.style.display = "block";
+      }
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <>
-      {/* Splash Screen */}
       <div className="splash">
         <div className="loader-container">
           <div className="logo">AmL</div>
@@ -21,10 +25,9 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="main-content" style={{ display: "none" }}>
-        <h1>Selamat Datang di AniMangaListo!</h1>
-        <p>Temukan anime dan manga favoritmu di sini.</p>
+        <h1>Welcome to AniMangaListo!</h1>
+        <p>Find your favorite anime and manga here.</p>
       </div>
 
       <style jsx>{`
@@ -91,8 +94,8 @@ export default function Home() {
           display: none;
           padding: 20px;
           text-align: center;
-          color: white;
-          background-color: #fff;
+          color: black;
+          background-color: white;
           min-height: 100vh;
         }
       `}</style>

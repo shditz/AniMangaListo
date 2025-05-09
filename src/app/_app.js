@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import { useEffect } from "react";
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
@@ -6,7 +7,7 @@ function MyApp({ Component, pageProps }) {
       navigator.serviceWorker
         .register("/service-worker.js")
         .then((reg) => console.log("Service Worker Registered", reg))
-        .catch((err) => console.log("SW registration failed: ", err));
+        .catch((err) => console.error("SW Registration Failed", err));
     }
   }, []);
 
