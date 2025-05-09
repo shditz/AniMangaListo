@@ -18,13 +18,14 @@ const PaginationRecomAnime = ({ api, page = 1, itemsPerPage }) => {
               href={`/anime/${anime.mal_id}`}
               className="relative block group"
             >
-              <Image
+              <img
                 src={anime.images.jpg.large_image_url}
                 alt={anime.title}
-                width={350}
-                height={350}
-                className="object-cover w-full h-full"
+                width="350"
+                height="350"
                 loading="lazy"
+                decoding="async"
+                className="object-cover w-full h-full"
               />
               <div className="absolute top-2 left-2 bg-purple-900/70 text-white px-2 rounded">
                 #{rank}
