@@ -11,6 +11,7 @@ import {
   FaInstagram,
   FaGithub,
   FaLinkedin,
+  FaArrowLeft,
 } from "react-icons/fa";
 import { debounce } from "lodash-es";
 import InputSearch from "./InputSearch";
@@ -59,6 +60,11 @@ const NavbarClient = ({ dropdownLinks }) => {
   const mobileMenuRef = useRef(null);
   const hoverTimeout = useRef(null);
   const showMobileMenuRef = useRef(mobileStates.menu);
+
+  const handleBack = () => {
+    setIsNavigating(true);
+    router.back();
+  };
 
   const navClasses = useMemo(
     () =>
@@ -261,6 +267,18 @@ const NavbarClient = ({ dropdownLinks }) => {
       <header className="relative select-none">
         <nav className={navClasses}>
           <div className="max-w-7xl mx-auto px-4 md:px-5 xl:px-0 flex justify-between items-center w-full">
+            {pathname !== "/" && (
+              <button
+                onClick={handleBack}
+                className="absolute left-0 hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-purple-950/30 transition duration-300  z-10"
+                aria-label="Back"
+              >
+                <FaArrowLeft className="w-5 h-5 text-white" />
+                <span className="text-white font-medium hidden md:inline">
+                  Back
+                </span>
+              </button>
+            )}
             <Link
               href="/"
               className="flex-shrink-0 text-white text-xl md:text-2xl font-bold"
@@ -424,7 +442,24 @@ const NavbarClient = ({ dropdownLinks }) => {
             <InputSearch isMobile handleNavigation={handleNavigation} />
           )}
         </nav>
-
+        {pathname !== "/" && (
+          <div
+            className={`xl:hidden fixed ${
+              isScrolled ? "top-8" : "top-16"
+            } left-0 z-40 transition-all duration-300 `}
+          >
+            <div className=" py-2">
+              <button
+                onClick={handleBack}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-black/20 hover:bg-purple-950/40 transition duration-300"
+                aria-label="Back"
+              >
+                <FaArrowLeft className="w-5 h-5 text-white" />
+                <span className="text-white font-medium">Back</span>
+              </button>
+            </div>
+          </div>
+        )}
         {mobileStates.menu && (
           <>
             <div
