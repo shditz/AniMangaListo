@@ -1,6 +1,7 @@
+//src/app/components/Anime/ListAnime/index.jsx
+
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PopularityIcon, FavoriteIcon } from "./Icons";
 import dynamic from "next/dynamic";

@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import ListAnime from "./ListAnime";
-import Link from "next/link";
+
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../NavButton"), {
+  ssr: false,
+});
 
 const DynamicSection = ({
   mostPopularData,
@@ -21,49 +25,49 @@ const DynamicSection = ({
       value: "seasonalanime",
       label: "Seasonal Anime",
       data: seasonalAnimeData || [],
-      linkHref: "/seasonal-anime",
+      linkHref: "/ViewAll/anime/seasonalanime",
     },
 
     {
       value: "highestAnime",
       label: "Top Anime",
       data: topAnimeData || [],
-      linkHref: "/top-anime",
+      linkHref: "/ViewAll/anime/topanime",
     },
 
     {
       value: "highestMovie",
       label: "Top Movie",
       data: topMovieData || [],
-      linkHref: "/top-movie",
+      linkHref: "/ViewAll/anime/topmovie",
     },
 
     {
       value: "airing",
       label: "Top Airing",
       data: topAiringData || [],
-      linkHref: "/top-airing",
+      linkHref: "/ViewAll/anime/airinganime",
     },
 
     {
       value: "upcoming",
       label: "Top Upcoming",
       data: upcomingData || [],
-      linkHref: "/upcoming-anime",
+      linkHref: "/ViewAll/anime/topupcoming",
     },
 
     {
       value: "mostPopular",
       label: "Most Popular",
       data: mostPopularData || [],
-      linkHref: "/most-popular",
+      linkHref: "/ViewAll/anime/mostpopular",
       metric: "popularity",
     },
     {
       value: "mostFavorited",
       label: "Most Favorited",
       data: mostFavoritedData || [],
-      linkHref: "/most-favorited",
+      linkHref: "/ViewAll/anime/mostfavorited",
       metric: "favorites",
     },
   ];
@@ -146,7 +150,7 @@ const DynamicSection = ({
       <ListAnime api={selectedOption.data} metric={selectedOption.metric} />
 
       <div className="flex justify-center mt-4">
-        <Link
+        <NavButton
           href={selectedOption.linkHref}
           className="inline-flex items-center space-x-2 text-purple-400 hover:text-purple-600 transition-colors bg-transparent"
         >
@@ -163,7 +167,7 @@ const DynamicSection = ({
               clipRule="evenodd"
             />
           </svg>
-        </Link>
+        </NavButton>
       </div>
     </section>
   );

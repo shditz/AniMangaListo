@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import ListManga from "./ListManga";
-import Link from "next/link";
+
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../NavButton"), {
+  ssr: false,
+});
 
 const SectionManga = ({
   topManga,
@@ -19,25 +23,25 @@ const SectionManga = ({
       value: "topManga",
       label: "Top Manga",
       data: topManga || [],
-      linkHref: "/top-manga",
+      linkHref: "/ViewAll/manga/topmanga",
     },
     {
       value: "topPublishing",
       label: "Top Publishing",
       data: topPublishing || [],
-      linkHref: "/publishing-manga",
+      linkHref: "/ViewAll/manga/toppublishing",
     },
     {
       value: "topUpcoming",
       label: "Top Upcoming",
       data: topUpcomingManga || [],
-      linkHref: "/tupcoming-manga",
+      linkHref: "/ViewAll/manga/topupcoming",
     },
     {
       value: "mostPopularManga",
       label: "Most Popular",
       data: mostPopularManga || [],
-      linkHref: "/popular-manga",
+      linkHref: "/ViewAll/manga/mostpopular",
       metric: "popularity",
     },
 
@@ -45,7 +49,7 @@ const SectionManga = ({
       value: "mostFavoritedManga",
       label: "Most Favorited",
       data: mostFavoritedManga || [],
-      linkHref: "/favorited-manga",
+      linkHref: "/ViewAll/manga/mostfavorited",
       metric: "favorites",
     },
   ];
@@ -128,7 +132,7 @@ const SectionManga = ({
       <ListManga api={selectedOption.data} metric={selectedOption.metric} />
 
       <div className="flex justify-center mt-4">
-        <Link
+        <NavButton
           href={selectedOption.linkHref}
           className="inline-flex items-center space-x-2 text-purple-400 hover:text-purple-600 transition-colors bg-transparent"
         >
@@ -145,7 +149,7 @@ const SectionManga = ({
               clipRule="evenodd"
             />
           </svg>
-        </Link>
+        </NavButton>
       </div>
     </section>
   );

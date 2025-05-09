@@ -87,7 +87,7 @@ const LatestCompleted = ({ data }) => {
         <Header
           title="Latest Completed"
           linkTitle="View More"
-          linkHref="/completed"
+          linkHref="/ViewAll/anime/Latestcompeleted"
         />
         <p className="text-gray-500 text-center py-4">
           No completed anime found.
@@ -101,7 +101,7 @@ const LatestCompleted = ({ data }) => {
       <Header
         title="Latest Completed"
         linkTitle="View More"
-        linkHref="/completed"
+        linkHref="/ViewAll/anime/Latestcompeleted"
       />
 
       <div className="relative mt-4">

@@ -222,7 +222,7 @@ export default async function Page() {
             <RecommendationAnime limit={10} />
             <div className="flex justify-center md:mt-4">
               <NavButton
-                href="/recommendation-anime"
+                href="/ViewAll/recommendationAnime"
                 className="inline-flex items-center space-x-2 text-purple-400 hover:text-purple-600 transition-colors bg-transparent"
               >
                 <span>View More</span>

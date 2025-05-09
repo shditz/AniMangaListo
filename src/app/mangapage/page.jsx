@@ -2,6 +2,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import ScrollAnimationWrapper from "../components/ScrollAnimationWrapper";
+import NavButton from "../components/NavButtonClient";
 
 const SectionManga = dynamic(() => import("../components/Manga/SectionManga"));
 const RecommendationManga = dynamic(() =>
@@ -123,8 +124,8 @@ export default async function MangaPage() {
           <Header2 title="Recommendation Manga" />
           <RecommendationManga limit={10} />
           <div className="flex justify-center mt-4">
-            <Link
-              href="/manga"
+            <NavButton
+              href="/ViewAll/recommendationManga"
               className="inline-flex items-center space-x-2 text-purple-400 hover:text-purple-600 transition-colors bg-transparent"
             >
               <span>View More</span>
@@ -136,7 +137,7 @@ export default async function MangaPage() {
               >
                 <path d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06L17.69 12l-5.72-5.72a.75.75 0 010-1.06z" />
               </svg>
-            </Link>
+            </NavButton>
           </div>
         </section>
       </ScrollAnimationWrapper>

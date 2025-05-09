@@ -1,3 +1,5 @@
+//src/app/components/Anime/NewEpisode/index.jsx
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -102,7 +104,7 @@ const NewEpisodesSection = ({ data: initialData }) => {
         <Header
           title="Latest Update"
           linkTitle="View More"
-          linkHref="/episodes"
+          linkHref="/ViewAll/anime/LatestUpdate"
         />
         <div className="grid md:grid-cols-5 grid-cols-2 gap-3 mt-4 px-2">
           {[...Array(cardsPerView)].map((_, i) => (
@@ -122,7 +124,7 @@ const NewEpisodesSection = ({ data: initialData }) => {
         <Header
           title="Latest Update"
           linkTitle="View More"
-          linkHref="/episodes"
+          linkHref="/ViewAll/anime/LatestUpdate"
         />
         <p className="text-center py-8 text-gray-400">No episodes available</p>
       </section>
@@ -134,7 +136,7 @@ const NewEpisodesSection = ({ data: initialData }) => {
       <Header
         title="Latest Update"
         linkTitle="View More"
-        linkHref="/episodes"
+        linkHref="/ViewAll/anime/LatestUpdate"
       />
 
       <div className="relative mt-4">
