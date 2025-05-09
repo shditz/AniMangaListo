@@ -3,7 +3,7 @@ let cachedData = null;
 let lastFetched = 0;
 
 export async function GET(request) {
-  const CACHE_TTL = 1000 * 60 * 60; // 1 jam
+  const CACHE_TTL = 1000 * 60 * 60;
   const shouldBypassCache = new URL(request.url).searchParams.get(
     "bypassCache"
   );

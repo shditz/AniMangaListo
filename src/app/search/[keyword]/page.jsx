@@ -3,9 +3,10 @@ import React from "react";
 import { useSearchParams } from "next/navigation";
 import AnimeSearch from "@/app/components/Anime/AnimeSearch";
 import MangaSearch from "@/app/components/Manga/MangaSearch";
-import Link from "next/link";
+
 import Header3 from "@/app/components/Header3";
 import Loading from "@/app/Loading";
+import Link from "next/link";
 
 export default function Page({ params }) {
   const { keyword } = React.use(params);

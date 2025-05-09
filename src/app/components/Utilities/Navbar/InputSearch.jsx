@@ -13,11 +13,9 @@ const InputSearch = ({ isMobile = false, handleNavigation }) => {
     if (keyword !== "") {
       const url = `/search/${encodeURIComponent(keyword)}?type=anime`;
 
-      // Pastikan handleNavigation tersedia sebelum dipakai
       if (typeof handleNavigation === "function") {
         handleNavigation(url);
       } else {
-        // Fallback ke router.push jika handleNavigation tidak tersedia
         router.push(url);
       }
     }

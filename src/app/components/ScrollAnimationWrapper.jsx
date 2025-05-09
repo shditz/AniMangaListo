@@ -1,4 +1,3 @@
-// src/app/components/ScrollAnimationWrapper.jsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";

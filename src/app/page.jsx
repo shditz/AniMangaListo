@@ -1,6 +1,5 @@
 //src/app/page.js
 
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import ScrollAnimationWrapper from "./components/ScrollAnimationWrapper";

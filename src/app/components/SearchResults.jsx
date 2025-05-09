@@ -3,6 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { motion, useInView, AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("./NavButton"), {
+  ssr: false,
+});
 
 const AnimeItem = ({ item, type, index }) => {
   const ref = React.useRef(null);
@@ -22,7 +26,7 @@ const AnimeItem = ({ item, type, index }) => {
         ease: "easeOut",
       }}
     >
-      <Link href={`/${type}/${item.mal_id}`}>
+      <NavButton href={`/${type}/${item.mal_id}`}>
         <div className="w-full relative h-[250px] xl:h-[350px] overflow-hidden group cursor-pointer">
           <img
             src={
@@ -47,7 +51,7 @@ const AnimeItem = ({ item, type, index }) => {
             <span>{item.score ? item.score.toFixed(2) : "N/A"}</span>
           </div>
         </div>
-      </Link>
+      </NavButton>
     </motion.div>
   );
 };
