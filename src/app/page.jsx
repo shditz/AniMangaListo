@@ -261,7 +261,7 @@ export default async function Page() {
           <TopVoiceActorsSection />
         </Suspense>
 
-        <section className="flex justify-center py-8">
+        <section className="flex justify-center gap-4 py-8">
           <NavButton
             href="/mangapage"
             className="inline-flex items-center px-6 py-3  text-base font-medium rounded-md  text-white bg-gradient-to-r from-purple-950 to-purple-600  hover:from-purple-600 hover:to-purple-950  transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
@@ -276,8 +276,46 @@ export default async function Page() {
               <path d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06L17.69 12l-5.72-5.72a.75.75 0 010-1.06z" />
             </svg>
           </NavButton>
+          <button
+            id="installPWAButton"
+            className="hidden items-center px-6 py-3 text-base font-medium rounded-md text-white  bg-gradient-to-r from-purple-950 to-purple-600  hover:from-purple-600 hover:to-purple-950   transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
+          >
+            Install App
+          </button>
         </section>
       </ScrollAnimationWrapper>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+      let deferredPrompt;
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('installPWAButton').classList.remove('hidden');
+      });
+
+      document.getElementById('installPWAButton').addEventListener('click', () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the install prompt');
+            }
+            deferredPrompt = null;
+            document.getElementById('installPWAButton').classList.add('hidden');
+          });
+        }
+      });
+
+      // Cek apakah app sudah di-instal
+      window.addEventListener('appinstalled', () => {
+        console.log('PWA was installed');
+        document.getElementById('installPWAButton').classList.add('hidden');
+      });
+    `,
+        }}
+      />
     </div>
   );
 }

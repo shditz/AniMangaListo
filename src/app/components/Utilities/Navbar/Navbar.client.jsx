@@ -290,7 +290,7 @@ const NavbarClient = ({ dropdownLinks }) => {
               AniMangaListo.
             </Link>
 
-            <div className="hidden md:flex flex-1 justify-center md:space-x-5 xl:space-x-6 xl:text-lg dropdown-container">
+            <div className="hidden xl:flex flex-1 justify-center md:space-x-5 xl:space-x-6 xl:text-lg dropdown-container">
               <Link
                 href="/"
                 className={`${
@@ -411,11 +411,11 @@ const NavbarClient = ({ dropdownLinks }) => {
               })}
             </div>
 
-            <div className="hidden item-center relative group md:flex">
+            <div className="hidden item-center relative group xl:flex">
               <InputSearch handleNavigation={handleNavigation} />
             </div>
 
-            <div className="flex items-center  md:hidden space-x-4">
+            <div className="flex items-center  xl:hidden space-x-4">
               <button
                 onClick={() =>
                   toggleMobileState("search", !mobileStates.search)
@@ -463,14 +463,14 @@ const NavbarClient = ({ dropdownLinks }) => {
         {mobileStates.menu && (
           <>
             <div
-              className="fixed inset-0 bg-black/70 z-40 md:hidden transition-opacity duration-300 ease-out"
+              className="fixed inset-0 bg-black/70 z-40 xl:hidden transition-opacity duration-300 ease-out"
               onClick={() => toggleMobileState("menu", false)}
             />
             <div
               ref={mobileMenuRef}
               className={`fixed top-0 right-0 h-full w-3/4 bg-black/40 backdrop-blur-2xl shadow-xl transform transition-all duration-300 ease-out ${
                 mobileStates.menu ? "translate-x-0" : "translate-x-full"
-              } md:hidden flex flex-col z-50`}
+              } xl:hidden flex flex-col z-50`}
             >
               <div className="p-4 pb-4 relative">
                 <button
@@ -577,10 +577,7 @@ const NavbarClient = ({ dropdownLinks }) => {
                 {dropdownLinks.staticLinks.map(({ href, text }) => {
                   if (text === "Genre") {
                     return (
-                      <div
-                        key={href}
-                        className="flex flex-col pt-3 dropdown-group"
-                      >
+                      <div key={href} className="flex flex-col  dropdown-group">
                         <button
                           onClick={() =>
                             toggleMobileState(
