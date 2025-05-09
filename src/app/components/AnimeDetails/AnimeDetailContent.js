@@ -21,7 +21,7 @@ export default function AnimeDetailContent({ id, initialData }) {
   });
 
   if (isLoading) {
-    return <Loading />; // ← Gunakan loader di sini
+    return <Loading />;
   }
 
   if (error)

@@ -5,6 +5,8 @@ import ContentTabs from "./ContentTabs";
 import { formatNumber, capitalizeFirstLetter } from "@/app/lib/utils";
 import { fetcher } from "@/app/lib/fetcher";
 import Loading from "@/app/Loading";
+import MangaReviews from "./MangaReview";
+import OtherManga from "./OtherManga";
 
 export default function MangaDetailContent({ id, initialData }) {
   const { data, error, isLoading } = useSWR(`/api/manga/${id}`, fetcher, {
@@ -274,6 +276,12 @@ export default function MangaDetailContent({ id, initialData }) {
         relations={relations}
         externalLinks={externalLinks}
       />
+      <div className="px-4 pb-4 bg-black relative z-10">
+        <MangaReviews mangaId={id} />
+      </div>
+      <div className="relative bg-black z-10 ">
+        <OtherManga />
+      </div>
     </div>
   );
 }
