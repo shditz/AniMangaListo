@@ -289,10 +289,18 @@ export default async function Page() {
           __html: `
       let deferredPrompt;
 
+      // Fungsi untuk mendeteksi apakah user menggunakan desktop
+      function isDesktop() {
+        return !/Mobi|Android/i.test(navigator.userAgent);
+      }
+
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        document.getElementById('installPWAButton').classList.remove('hidden');
+
+        if (isDesktop()) {
+          document.getElementById('installPWAButton').classList.remove('hidden');
+        }
       });
 
       document.getElementById('installPWAButton').addEventListener('click', () => {
@@ -308,7 +316,6 @@ export default async function Page() {
         }
       });
 
-      // Cek apakah app sudah di-instal
       window.addEventListener('appinstalled', () => {
         console.log('PWA was installed');
         document.getElementById('installPWAButton').classList.add('hidden');
