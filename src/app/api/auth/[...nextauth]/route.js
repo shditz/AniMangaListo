@@ -1,23 +1,24 @@
-// src/app/api/auth/[...nextauth]/route.js
+// app/api/auth/[...nextauth]/route.js
 import NextAuth from "next-auth";
-
 import GoogleProvider from "next-auth/providers/google";
-import prisma from "@/app/lib/prisma";
 
 export const authOption = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
   ],
   callbacks: {
     async session({ session, token }) {
       try {
-        if (session?.user) {
+        if (session?.user?.email) {
+          const prismaModule = await import("@/app/lib/prisma");
+          const prisma = prismaModule.default;
           const email = session.user.email.toLowerCase();
+
           const dbUser = await prisma.user.findUnique({
-            where: { email: session.user.email },
+            where: { email },
           });
 
           if (dbUser) {
@@ -32,13 +33,17 @@ export const authOption = {
         }
         return session;
       } catch (error) {
-        console.error("Session error:", error);
+        console.error("Session callback error:", error);
         return session;
       }
     },
+
     async signIn({ user, account, profile }) {
       try {
+        const prismaModule = await import("@/app/lib/prisma");
+        const prisma = prismaModule.default;
         const email = user.email?.toLowerCase();
+
         const existingUser = await prisma.user.findUnique({
           where: { email },
         });
@@ -52,9 +57,10 @@ export const authOption = {
             },
           });
         }
+
         return true;
       } catch (error) {
-        console.error("Sign-in error:", error);
+        console.error("Sign-in callback error:", error);
         return false;
       }
     },
@@ -63,7 +69,7 @@ export const authOption = {
     signIn: "/login",
     error: "/auth/error",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "",
 };
 
 const handler = NextAuth(authOption);
