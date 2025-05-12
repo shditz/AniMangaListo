@@ -264,7 +264,7 @@ const DashboardContent = ({ user, trendingAnime }) => {
                 )}
               </div>
               <Link
-                href="/bookmark"
+                href="/bookmarks"
                 className="mt-4 w-full py-2 border border-purple-700 rounded-lg hover:bg-purple-900/30 transition-colors block text-center"
               >
                 View Full Bookmark

@@ -25,7 +25,7 @@ const STATIC_LINKS = {
   ],
   staticLinks: [
     { href: "/genres", text: "Genre" },
-    { href: "/bookmark", text: "Bookmark" },
+    { href: "/bookmarks", text: "Bookmark" },
   ],
 };
 
