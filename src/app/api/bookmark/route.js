@@ -52,12 +52,16 @@ export async function POST(request) {
 }
 
 export async function GET(request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
+    if (process.env.NEXT_PHASE === "phase-production-build") {
+      return NextResponse.json([]);
+    }
+
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const bookmarks = await prisma.bookmarkedAnime.findMany({
       where: { userId: session.user.id },
     });
