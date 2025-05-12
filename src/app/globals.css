@@ -291,3 +291,38 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.imgprofile:before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(90deg, #a855f7, #6b21a8, #a855f7);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  animation: spin 4s linear infinite;
+  transition: transform 0.3s ease;
+  pointer-events: none;
+  filter: blur(2px);
+  opacity: 0.8;
+  z-index: 0;
+}
+
+.imgprofile:hover::before {
+  transform: scale(1.01) rotate(360deg);
+  filter: blur(4px);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

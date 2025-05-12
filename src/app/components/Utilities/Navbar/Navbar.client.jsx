@@ -440,14 +440,12 @@ const NavbarClient = ({ dropdownLinks, userAction }) => {
                 <InputSearch handleNavigation={router.push} />
               </div>
 
-              {/* Tambahkan userAction di sini */}
-              <div className="hidden xl:flex items-center gap-4 ml-auto">
+              <div className="hidden  xl:flex items-center gap-4 ml-auto">
                 {userAction}
                 {ProfilePhoto}
               </div>
               {/* Mobile Section */}
               <div className="flex items-center xl:hidden space-x-4">
-                {/* Foto profil dan signin di sebelah kiri */}
                 <div className="flex items-center gap-2">{ProfilePhoto}</div>
 
                 {/* Icon search */}
@@ -695,7 +693,7 @@ const NavbarClient = ({ dropdownLinks, userAction }) => {
                     );
                   }
                 })}
-                <div className="xl:hidden pt-4 border-t flex justify-center items-center border-purple-700 mt-4 px-6">
+                <div className="xl:hidden pt-1 border-t flex justify-center items-center border-purple-700 mt-4 px-6">
                   {userAction}
                 </div>
                 {!isAppInstalled && deferredPrompt && (

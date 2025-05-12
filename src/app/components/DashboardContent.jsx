@@ -121,8 +121,8 @@ const DashboardContent = ({ user, trendingAnime }) => {
         <section className="mb-12">
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-purple-900/30">
             <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="relative">
-                <div className="w-[150px] h-[150px] rounded-full overflow-hidden border-4 border-purple-500 shadow-lg">
+              <div className="relative imgprofile">
+                <div className="w-[150px] h-[150px] select-none rounded-full overflow-hidden  shadow-lg">
                   <img
                     src={currentUser?.image || "https://placehold.co/250x250 "}
                     alt={currentUser?.name || "User"}
