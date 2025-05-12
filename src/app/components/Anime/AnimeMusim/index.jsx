@@ -40,7 +40,7 @@ export default function AnimeCarousel({ animeList }) {
     const fetchBookmarks = async () => {
       if (session?.user) {
         try {
-          const res = await fetch("/api/bookmark");
+          const res = await fetch("/src/app/api/bookmark");
           const data = await res.json();
           setBookmarks(data);
         } catch (error) {
@@ -122,7 +122,7 @@ export default function AnimeCarousel({ animeList }) {
     }
 
     try {
-      const res = await fetch("/api/bookmark", {
+      const res = await fetch("/src/app/api/bookmark", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -144,8 +144,8 @@ export default function AnimeCarousel({ animeList }) {
         }, 3000);
 
         // Update daftar bookmark
-        const updatedBookmarks = await fetch("/api/bookmark").then((res) =>
-          res.json()
+        const updatedBookmarks = await fetch("/src/app/api/bookmark").then(
+          (res) => res.json()
         );
         setBookmarks(updatedBookmarks);
       }

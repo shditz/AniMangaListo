@@ -43,7 +43,7 @@ export default function AnimeDetailContent({ id, initialData }) {
   useEffect(() => {
     if (!session?.user) return;
     let mounted = true;
-    fetch("/api/bookmark")
+    fetch("/src/app/api/bookmark")
       .then((res) => res.json())
       .then((data) => {
         if (mounted) setBookmarks(data);
@@ -66,7 +66,7 @@ export default function AnimeDetailContent({ id, initialData }) {
       return;
     }
     try {
-      const res = await fetch("/api/bookmark", {
+      const res = await fetch("/src/app/src/app/api/bookmark", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -82,7 +82,9 @@ export default function AnimeDetailContent({ id, initialData }) {
         timeoutRef.current = setTimeout(() => {
           setBookmarkedAnimeId(null);
         }, 3000);
-        const updated = await fetch("/api/bookmark").then((r) => r.json());
+        const updated = await fetch("/src/app/api/bookmark").then((r) =>
+          r.json()
+        );
         setBookmarks(updated);
       }
     } catch (err) {

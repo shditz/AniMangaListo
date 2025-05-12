@@ -1,4 +1,4 @@
-//app/api/bookmark/route.js
+//app/src/app/api/bookmark/route.js
 
 import { NextResponse } from "next/server";
 import prisma from "@/app/lib/prisma";

@@ -47,7 +47,7 @@ const DashboardContent = ({ user, trendingAnime }) => {
   useEffect(() => {
     const fetchBookmarks = async () => {
       try {
-        const res = await fetch("/api/bookmark");
+        const res = await fetch("/src/app/api/bookmark");
         if (!res.ok) throw new Error("Failed to fetch bookmarks");
         const data = await res.json();
         setBookmarks(data);
