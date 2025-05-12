@@ -4,7 +4,6 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
-  // lazy import
   const { auth } = await import("@/app/lib/auth");
   const prismaModule = await import("@/app/lib/prisma");
   const prisma = prismaModule.default;

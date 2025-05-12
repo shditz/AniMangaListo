@@ -16,13 +16,21 @@ export default function EditProfile({ user, onClose }) {
   const [error, setError] = useState("");
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: "image/*",
+    accept: {
+      "image/*": [".jpg", ".jpeg", ".png", ".gif"],
+    },
     onDrop: (acceptedFiles) => {
       const file = acceptedFiles[0];
       if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          setError("File size should not exceed 5MB");
+          return;
+        }
+
         setFile(file);
         setPreview(URL.createObjectURL(file));
         setFormData((prev) => ({ ...prev, image: "" }));
+        setError("");
       }
     },
   });
@@ -44,30 +52,50 @@ export default function EditProfile({ user, onClose }) {
       let imageUrl = formData.image;
 
       if (file) {
-        const formData = new FormData();
-        formData.append("file", file);
+        const CLOUDINARY_PRESET = "nextjs_profile_upload";
+        const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 
-        const uploadResponse = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
+        const uniqueFileName = `${Date.now()}-${file.name}`;
+        const renamedFile = new File([file], uniqueFileName, {
+          type: file.type,
         });
 
+        const formDataUpload = new FormData();
+        formDataUpload.append("file", renamedFile);
+        formDataUpload.append("upload_preset", CLOUDINARY_PRESET);
+        formDataUpload.append("cloud_name", CLOUD_NAME);
+
+        const uploadResponse = await fetch(
+          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+          {
+            method: "POST",
+            body: formDataUpload,
+          }
+        );
+
         if (!uploadResponse.ok) {
-          throw new Error("Gagal mengupload gambar");
+          const errorText = await uploadResponse.text();
+          console.error("Error:", errorText);
+          throw new Error("Failed Upload Image");
         }
 
-        const { imageUrl: uploadedUrl } = await uploadResponse.json();
-        imageUrl = uploadedUrl;
+        const uploaded = await uploadResponse.json();
+        imageUrl = uploaded.secure_url;
       }
 
       const response = await fetch("/api/users", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ ...formData, image: imageUrl }),
       });
 
       const result = await response.json();
-      if (!response.ok) throw new Error(result.message);
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to Save Changes");
+      }
 
       await update({
         ...session,
@@ -77,8 +105,6 @@ export default function EditProfile({ user, onClose }) {
           image: result.data.image,
         },
       });
-
-      onClose();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -87,8 +113,8 @@ export default function EditProfile({ user, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0  bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-black/80 rounded-xl  p-6 w-full max-w-md">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <div className="bg-black/80 rounded-xl p-6 w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4">Edit Profile</h2>
         {error && (
           <div className="mb-4 p-3 bg-red-900/50 text-red-300 rounded-lg">
@@ -142,7 +168,7 @@ export default function EditProfile({ user, onClose }) {
             <div className="mt-4">
               <input
                 type="text"
-                placeholder="Or enter an image URL"
+                placeholder="Atau masukkan URL gambar"
                 value={formData.image}
                 onChange={(e) => {
                   setFormData({ ...formData, image: e.target.value });

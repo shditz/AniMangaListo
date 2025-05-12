@@ -134,16 +134,13 @@ export default function AnimeCarousel({ animeList }) {
       });
 
       if (res.ok) {
-        // Set anime yang baru di-bookmark
         setBookmarkedAnimeId(anime.mal_id);
 
-        // Reset setelah 3 detik
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
         timeoutRef.current = setTimeout(() => {
           setBookmarkedAnimeId(null);
         }, 3000);
 
-        // Update daftar bookmark
         const updatedBookmarks = await fetch("/api/bookmark").then((res) =>
           res.json()
         );

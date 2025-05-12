@@ -1,5 +1,5 @@
 // app/api/users/route.js
-export const dynamic = "force-dynamic"; // agar route ini tetap dinamis
+export const dynamic = "force-dynamic";
 
 export async function PUT(request) {
   try {
