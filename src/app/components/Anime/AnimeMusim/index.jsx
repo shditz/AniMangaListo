@@ -1,3 +1,5 @@
+//app/components/Anime/AnimeMusim/index.jsx
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
