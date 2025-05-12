@@ -5,7 +5,8 @@ import dynamic from "next/dynamic";
 const NavButton = dynamic(() => import("../../NavButton"), {
   ssr: false,
 });
-
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 const formatNumber = (number) => {
   return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
@@ -25,9 +26,28 @@ export default function AnimeCarousel({ animeList }) {
   const [currentSeason, setCurrentSeason] = useState(null);
   const [windowWidth, setWindowWidth] = useState(0);
   const intervalRef = useRef();
-
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [bookmarks, setBookmarks] = useState([]);
   const uniqueAnimes = removeDuplicates(animeList || [], "mal_id");
   const totalSlides = uniqueAnimes.length;
+  const [bookmarkedAnimeId, setBookmarkedAnimeId] = useState(null);
+  const timeoutRef = useRef();
+
+  useEffect(() => {
+    const fetchBookmarks = async () => {
+      if (session?.user) {
+        try {
+          const res = await fetch("/api/bookmark");
+          const data = await res.json();
+          setBookmarks(data);
+        } catch (error) {
+          console.error("Error fetching bookmarks:", error);
+        }
+      }
+    };
+    fetchBookmarks();
+  }, [session]);
 
   useEffect(() => {
     if (totalSlides <= 1) return;
@@ -92,6 +112,51 @@ export default function AnimeCarousel({ animeList }) {
       </div>
     );
   }
+
+  const handleBookmark = async (anime) => {
+    if (!session?.user) {
+      router.push("/api/auth/signin");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/bookmark", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          malId: anime.mal_id,
+          title: anime.title,
+          imageUrl: anime.images.jpg.large_image_url,
+          score: anime.score,
+        }),
+      });
+
+      if (res.ok) {
+        // Set anime yang baru di-bookmark
+        setBookmarkedAnimeId(anime.mal_id);
+
+        // Reset setelah 3 detik
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
+          setBookmarkedAnimeId(null);
+        }, 3000);
+
+        // Update daftar bookmark
+        const updatedBookmarks = await fetch("/api/bookmark").then((res) =>
+          res.json()
+        );
+        setBookmarks(updatedBookmarks);
+      }
+    } catch (error) {
+      console.error("Bookmark error:", error);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   return (
     <div
@@ -286,21 +351,32 @@ export default function AnimeCarousel({ animeList }) {
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
                   </NavButton>
-                  <button className="text-purple-400 font-medium hover:bg-purple-600 hover:text-white flex items-center gap-1 text-sm md:text-lg px-3 py-1 md:px-4 md:py-2 rounded-lg">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-4 h-4 md:w-7 md:h-7"
-                    >
-                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                    </svg>
-                    <span>Bookmark</span>
-                  </button>
+                  {bookmarkedAnimeId === anime.mal_id ? (
+                    <span className="text-purple-400 font-medium text-sm md:text-lg px-3 py-1 md:px-4 md:py-2">
+                      Bookmark Added!
+                    </span>
+                  ) : (
+                    !bookmarks.some((b) => b.malId === anime.mal_id) && (
+                      <button
+                        onClick={() => handleBookmark(anime)}
+                        className="text-purple-400 font-medium hover:bg-purple-600 hover:text-white flex items-center gap-1 text-sm md:text-lg px-3 py-1 md:px-4 md:py-2 rounded-lg"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-4 h-4 md:w-7 md:h-7"
+                        >
+                          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                        </svg>
+                        <span>Bookmark</span>
+                      </button>
+                    )
+                  )}
                 </div>
               </div>
             </div>

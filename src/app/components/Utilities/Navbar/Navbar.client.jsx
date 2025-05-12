@@ -1,6 +1,9 @@
 "use client";
 
-import Link from "next/link";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../../NavButton"), {
+  ssr: false,
+});
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
 import {
@@ -16,6 +19,7 @@ import {
 import { debounce } from "lodash-es";
 import InputSearch from "./InputSearch";
 import { usePathname, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const DropdownChevron = ({ isActive }) => (
   <svg
@@ -41,7 +45,7 @@ const SocialIcon = ({ href, color, icon: Icon }) => (
   </a>
 );
 
-const NavbarClient = ({ dropdownLinks }) => {
+const NavbarClient = ({ dropdownLinks, userAction }) => {
   const router = useRouter();
   const [isNavigating, setIsNavigating] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -60,6 +64,26 @@ const NavbarClient = ({ dropdownLinks }) => {
   const mobileMenuRef = useRef(null);
   const hoverTimeout = useRef(null);
   const showMobileMenuRef = useRef(mobileStates.menu);
+
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  const ProfilePhoto = useMemo(() => {
+    if (!user?.image) return null;
+
+    return (
+      <NavButton
+        href="/users/dashboard"
+        className="rounded-full overflow-hidden w-10 h-10 border-2 border-purple-700 hover:border-purple-400 transition duration-300 ml-4"
+      >
+        <img
+          src={user.image}
+          alt="Profile"
+          className="w-full h-full object-cover"
+        />
+      </NavButton>
+    );
+  }, [user]);
 
   const handleBack = () => {
     setIsNavigating(true);
@@ -216,7 +240,7 @@ const NavbarClient = ({ dropdownLinks }) => {
 
   const renderDropdownLinks = (type) =>
     dropdownLinks[type].map(({ href, text }) => (
-      <Link
+      <NavButton
         key={href}
         href={href}
         className="block px-4 py-2 text-white hover:bg-purple-800/40"
@@ -227,7 +251,7 @@ const NavbarClient = ({ dropdownLinks }) => {
         }}
       >
         {text}
-      </Link>
+      </NavButton>
     ));
 
   const SocialLinks = () => (
@@ -244,12 +268,12 @@ const NavbarClient = ({ dropdownLinks }) => {
       <header>
         <nav className={navClasses}>
           <div className="max-w-7xl mx-auto px-4 md:px-6 flex justify-between items-center w-full">
-            <Link
+            <NavButton
               href="/"
               className="flex-shrink-0 text-white text-xl md:text-2xl font-bold"
             >
               AniMangaListo.
-            </Link>
+            </NavButton>
           </div>
         </nav>
       </header>
@@ -279,7 +303,7 @@ const NavbarClient = ({ dropdownLinks }) => {
                 </span>
               </button>
             )}
-            <Link
+            <NavButton
               href="/"
               className="flex-shrink-0 text-white text-xl md:text-2xl font-bold"
               onClick={(e) => {
@@ -288,10 +312,10 @@ const NavbarClient = ({ dropdownLinks }) => {
               }}
             >
               AniMangaListo.
-            </Link>
+            </NavButton>
 
             <div className="hidden xl:flex flex-1 justify-center md:space-x-5 xl:space-x-6 xl:text-lg dropdown-container">
-              <Link
+              <NavButton
                 href="/"
                 className={`${
                   isActivePath("/") ? "text-purple-500" : "text-white"
@@ -302,7 +326,7 @@ const NavbarClient = ({ dropdownLinks }) => {
                 }}
               >
                 Home
-              </Link>
+              </NavButton>
 
               <div
                 className="relative dropdown-group"
@@ -376,24 +400,24 @@ const NavbarClient = ({ dropdownLinks }) => {
                         onMouseEnter={() => setActiveDropdown("genre")}
                         onMouseLeave={() => setActiveDropdown(null)}
                       >
-                        <Link
+                        <NavButton
                           href="/genres"
                           className="block px-4 py-2 text-white hover:bg-purple-800/40"
                         >
                           Anime
-                        </Link>
-                        <Link
+                        </NavButton>
+                        <NavButton
                           href="/genresmanga"
                           className="block px-4 py-2 text-white hover:bg-purple-800/40"
                         >
                           Manga
-                        </Link>
+                        </NavButton>
                       </div>
                     </div>
                   );
                 } else {
                   return (
-                    <Link
+                    <NavButton
                       key={href}
                       href={href}
                       className={`${
@@ -405,36 +429,49 @@ const NavbarClient = ({ dropdownLinks }) => {
                       }}
                     >
                       {text}
-                    </Link>
+                    </NavButton>
                   );
                 }
               })}
             </div>
 
-            <div className="hidden item-center relative group xl:flex">
-              <InputSearch handleNavigation={handleNavigation} />
-            </div>
+            <div className="flex items-center gap-4">
+              <div className="hidden xl:flex item-center relative group">
+                <InputSearch handleNavigation={router.push} />
+              </div>
 
-            <div className="flex items-center  xl:hidden space-x-4">
-              <button
-                onClick={() =>
-                  toggleMobileState("search", !mobileStates.search)
-                }
-                aria-label="Search"
-              >
-                <FaSearch className="text-white w-5 h-5" />
-              </button>
+              {/* Tambahkan userAction di sini */}
+              <div className="hidden xl:flex items-center gap-4 ml-auto">
+                {userAction}
+                {ProfilePhoto}
+              </div>
+              {/* Mobile Section */}
+              <div className="flex items-center xl:hidden space-x-4">
+                {/* Foto profil dan signin di sebelah kiri */}
+                <div className="flex items-center gap-2">{ProfilePhoto}</div>
 
-              <button
-                onClick={() => toggleMobileState("menu", !mobileStates.menu)}
-                aria-label="Mobile menu"
-              >
-                {mobileStates.menu ? (
-                  <FaTimes className="text-white w-6 h-6" />
-                ) : (
-                  <FaBars className="text-white w-6 h-6" />
-                )}
-              </button>
+                {/* Icon search */}
+                <button
+                  onClick={() =>
+                    toggleMobileState("search", !mobileStates.search)
+                  }
+                  aria-label="Search"
+                >
+                  <FaSearch className="text-white w-5 h-5" />
+                </button>
+
+                {/* Menu mobile */}
+                <button
+                  onClick={() => toggleMobileState("menu", !mobileStates.menu)}
+                  aria-label="Mobile menu"
+                >
+                  {mobileStates.menu ? (
+                    <FaTimes className="text-white w-6 h-6" />
+                  ) : (
+                    <FaBars className="text-white w-6 h-6" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -481,16 +518,16 @@ const NavbarClient = ({ dropdownLinks }) => {
                   <FaTimes className="w-6 h-6" />
                 </button>
 
-                <div className="mt-8 mb-3">
-                  <h2 className="text-2xl ml-6 font-bold text-purple-400">
+                <div className="mt-8 mb-3 flex items-center justify-between ">
+                  <h2 className="text-2xl font-bold text-purple-400">
                     AniMangaListo.
                   </h2>
-                  <div className="w-full border-t border-purple-700 mt-4"></div>
                 </div>
+                <div className="w-full border-t border-purple-700 mt-4"></div>
               </div>
 
               <div className="flex-1 overflow-y-auto px-6 space-y-4 dropdown-container pt-4">
-                <Link
+                <NavButton
                   href="/"
                   className={`${
                     isActivePath("/") ? "text-purple-500" : "text-white"
@@ -502,9 +539,28 @@ const NavbarClient = ({ dropdownLinks }) => {
                   }}
                 >
                   Home
-                </Link>
+                </NavButton>
 
-                <div className="flex flex-col pt-3 dropdown-group">
+                <div className="flex flex-col pt-3">
+                  {user && (
+                    <NavButton
+                      href="/users/dashboard"
+                      className={`${
+                        isActivePath("/users/dashboard")
+                          ? "text-purple-500"
+                          : "text-white"
+                      } text-base font-semibold hover:text-purple-300`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleNavigation("/users/dashboard");
+                        toggleMobileState("menu", false);
+                      }}
+                    >
+                      Dashboard
+                    </NavButton>
+                  )}
+                </div>
+                <div className="flex flex-col  dropdown-group">
                   <button
                     onClick={() =>
                       toggleMobileState(
@@ -522,7 +578,7 @@ const NavbarClient = ({ dropdownLinks }) => {
                   {mobileStates.dropdown === "anime" && (
                     <div className="ml-4 mt-2 space-y-3">
                       {dropdownLinks.anime.map(({ href, text }) => (
-                        <Link
+                        <NavButton
                           key={href}
                           href={href}
                           className="block text-gray-200 font-medium text-sm"
@@ -533,7 +589,7 @@ const NavbarClient = ({ dropdownLinks }) => {
                           }}
                         >
                           {text}
-                        </Link>
+                        </NavButton>
                       ))}
                     </div>
                   )}
@@ -557,7 +613,7 @@ const NavbarClient = ({ dropdownLinks }) => {
                   {mobileStates.dropdown === "manga" && (
                     <div className="ml-4 mt-2 space-y-3">
                       {dropdownLinks.manga.map(({ href, text }) => (
-                        <Link
+                        <NavButton
                           key={href}
                           href={href}
                           className="block text-gray-200 font-medium text-sm"
@@ -568,7 +624,7 @@ const NavbarClient = ({ dropdownLinks }) => {
                           }}
                         >
                           {text}
-                        </Link>
+                        </NavButton>
                       ))}
                     </div>
                   )}
@@ -594,7 +650,7 @@ const NavbarClient = ({ dropdownLinks }) => {
                         </button>
                         {mobileStates.dropdown === "genre" && (
                           <div className="ml-4 mt-2 space-y-3">
-                            <Link
+                            <NavButton
                               href="/genres"
                               className="block text-gray-200 font-medium text-sm"
                               onClick={(e) => {
@@ -604,8 +660,8 @@ const NavbarClient = ({ dropdownLinks }) => {
                               }}
                             >
                               Anime
-                            </Link>
-                            <Link
+                            </NavButton>
+                            <NavButton
                               href="/genresmanga"
                               className="block text-gray-200 font-medium text-sm"
                               onClick={(e) => {
@@ -615,14 +671,14 @@ const NavbarClient = ({ dropdownLinks }) => {
                               }}
                             >
                               Manga
-                            </Link>
+                            </NavButton>
                           </div>
                         )}
                       </div>
                     );
                   } else {
                     return (
-                      <Link
+                      <NavButton
                         key={href}
                         href={href}
                         className={`${
@@ -635,10 +691,13 @@ const NavbarClient = ({ dropdownLinks }) => {
                         }}
                       >
                         {text}
-                      </Link>
+                      </NavButton>
                     );
                   }
                 })}
+                <div className="xl:hidden pt-4 border-t flex justify-center items-center border-purple-700 mt-4 px-6">
+                  {userAction}
+                </div>
                 {!isAppInstalled && deferredPrompt && (
                   <div className="pt-4">
                     <button

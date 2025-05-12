@@ -1,35 +1,33 @@
+//app/components/AnimeDetails/AnimeDetailContent.jsx
+
 "use client";
 import useSWR from "swr";
-import Image from "next/image";
 import TrailerPlayer from "./TrailerPlayer/TrailerPlayer";
 import StreamModal from "./StreamModel";
 import ContentTabs from "./ContentTabs";
 import ShareButtons from "./Share";
 import { formatNumber, capitalizeFirstLetter } from "@/app/lib/utils";
 import { fetcher } from "@/app/lib/fetcher";
-import { useEffect, useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { parseTheme } from "@/app/lib/themeParser";
 import OtherAnime from "@/app/components/Anime/OtherAnime";
 import AnimeReviews from "../AnimeReview";
 import Loading from "@/app/Loading";
 
 export default function AnimeDetailContent({ id, initialData }) {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [bookmarks, setBookmarks] = useState([]);
+  const [bookmarkedAnimeId, setBookmarkedAnimeId] = useState(null);
+  const timeoutRef = useRef();
+
   const { data, error, isLoading } = useSWR(`/api/anime/${id}`, fetcher, {
     fallbackData: initialData,
     revalidateOnFocus: true,
-    refreshInterval: 300000,
+    refreshInterval: 300_000,
   });
-
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  if (error)
-    return (
-      <div className="text-red-500 text-center py-20">
-        Failed Load Anime Data, Try Load Again.
-      </div>
-    );
 
   const {
     anime = {},
@@ -42,37 +40,73 @@ export default function AnimeDetailContent({ id, initialData }) {
     relations = [],
   } = data;
 
-  const englishTitle = alternativeTitles.english || anime.title;
+  useEffect(() => {
+    if (!session?.user) return;
+    let mounted = true;
+    fetch("/api/bookmark")
+      .then((res) => res.json())
+      .then((data) => {
+        if (mounted) setBookmarks(data);
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, [session]);
 
-  const metaData = {
-    title: anime.title || "Anime Details",
-    description: anime.synopsis || "Discover this amazing anime",
-    image: anime.images?.jpg?.large_image_url || "/placeholder.jpg",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL}/anime/${anime.mal_id}`,
-    siteName: "AniMangaListo",
-  };
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  const handleBookmark = useCallback(async () => {
+    if (!session?.user) {
+      router.push("/api/auth/signin");
+      return;
+    }
+    try {
+      const res = await fetch("/api/bookmark", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          malId: anime.mal_id,
+          title: anime.title,
+          imageUrl: anime.images.jpg.large_image_url,
+          score: anime.score,
+        }),
+      });
+      if (res.ok) {
+        setBookmarkedAnimeId(anime.mal_id);
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
+          setBookmarkedAnimeId(null);
+        }, 3000);
+        const updated = await fetch("/api/bookmark").then((r) => r.json());
+        setBookmarks(updated);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, [session, anime, router]);
 
   const ThemeItem = ({ theme }) => {
     const [rawTitle, artist] = parseTheme(theme);
     const title = rawTitle.replace(/:/g, "");
-
     const searchYouTubeMV = () => {
       const cleanTitle = title
         .replace(/^\d+\.?\s*/, "")
         .replace(/^"([^"]+)"\s*/, "$1")
-        .replace(/\s*$(?:eps\s*)?[^)\n]*(?:$[^)\n]*)?/g, "")
+        .replace(/\s*$(?:eps\s*)?[^)]*(?:$[^)]*)?/g, "")
         .split("(")[0]
         .trim();
-
       const query = `${cleanTitle} ${artist}`;
       const encodedQuery = encodeURIComponent(query);
-
       window.open(
-        `https://www.youtube.com/results?search_query=${encodedQuery}`,
+        `https://www.youtube.com/results?search_query= ${encodedQuery}`,
         "_blank"
       );
     };
-
     return (
       <div className="flex items-center justify-between bg-gray-900/50 p-2 rounded-md">
         <div>
@@ -102,6 +136,26 @@ export default function AnimeDetailContent({ id, initialData }) {
     </div>
   );
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return (
+      <div className="text-red-500 text-center py-20">
+        Failed Load Anime Data, Try Again.
+      </div>
+    );
+  }
+
+  const englishTitle = alternativeTitles.english || anime.title;
+  const metaData = {
+    title: anime.title || "Anime Details",
+    description: anime.synopsis || "Discover this amazing anime",
+    image: anime.images?.jpg?.large_image_url || "/placeholder.jpg",
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}/anime/${anime.mal_id}`,
+    siteName: "AniMangaListo",
+  };
   return (
     <div className="bg-gray-200 relative">
       <div
@@ -287,17 +341,28 @@ export default function AnimeDetailContent({ id, initialData }) {
             </div>
           </div>
 
-          <button className="flex gap-1 select-none bg-purple-500 items-center xl:text-base md:text-xs text-sm text-white px-3 py-2 rounded mb-4 hover:bg-purple-700 transition-colors">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-5 h-5"
-            >
-              <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" />
-            </svg>
-            Bookmark
-          </button>
+          {bookmarkedAnimeId === anime.mal_id ? (
+            <span className="text-purple-400 font-medium text-sm md:text-lg px-3 py-1 md:px-4 md:py-2">
+              Bookmark Added!
+            </span>
+          ) : (
+            !bookmarks.some((b) => b.malId === anime.mal_id) && (
+              <button
+                onClick={handleBookmark}
+                className="flex gap-1 select-none bg-purple-500 items-center xl:text-base md:text-xs text-sm text-white px-3 py-2 rounded mb-4 hover:bg-purple-700 transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" />
+                </svg>
+                Bookmark
+              </button>
+            )
+          )}
 
           <div className="mb-5">
             <h3 className="xl:text-base md:text-sm font-semibold mb-1">

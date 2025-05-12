@@ -1,4 +1,6 @@
 import NavbarClient from "./Navbar.client";
+import UserActionServer from "./UserActionserver";
+import { getServerSession } from "next-auth";
 
 export const revalidate = 3600;
 
@@ -27,8 +29,14 @@ const STATIC_LINKS = {
   ],
 };
 
-const NavbarServer = () => {
-  return <NavbarClient dropdownLinks={STATIC_LINKS} />;
+const NavbarServer = async () => {
+  const session = await getServerSession();
+  return (
+    <NavbarClient
+      dropdownLinks={STATIC_LINKS}
+      userAction={<UserActionServer />}
+    />
+  );
 };
 
 export default NavbarServer;
