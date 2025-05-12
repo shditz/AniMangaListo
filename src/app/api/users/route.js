@@ -1,12 +1,18 @@
-//app/api/users/route.js
-
-import { getServerSession } from "next-auth";
-import { authOption } from "@/app/api/auth/[...nextauth]/route";
-import prisma from "@/app/lib/prisma";
+// app/api/users/route.js
+export const dynamic = "force-dynamic"; // agar route ini tetap dinamis
 
 export async function PUT(request) {
   try {
+    const [{ getServerSession }, { authOption }, prismaModule] =
+      await Promise.all([
+        import("next-auth"),
+        import("@/app/api/auth/[...nextauth]/route"),
+        import("@/app/lib/prisma"),
+      ]);
+
+    const prisma = prismaModule.default;
     const session = await getServerSession(authOption);
+
     if (!session?.user?.email) {
       return Response.json({ status: 401, message: "Unauthorized" });
     }
