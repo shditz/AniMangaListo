@@ -12,6 +12,8 @@ const DashboardContent = ({ user, trendingAnime }) => {
   const currentUser = session?.user || user;
   const [showEdit, setShowEdit] = useState(false);
   const [bookmarks, setBookmarks] = useState([]);
+  const [userComments, setUserComments] = useState([]);
+  const [isLoadingComments, setIsLoadingComments] = useState(true);
 
   const userReviews = [
     {
@@ -57,6 +59,24 @@ const DashboardContent = ({ user, trendingAnime }) => {
     };
     fetchBookmarks();
   }, []);
+
+  useEffect(() => {
+    const fetchUserComments = async () => {
+      if (!currentUser?.id) return;
+
+      try {
+        const res = await fetch(`/api/comments?userId=${currentUser.id}`);
+        const data = await res.json();
+        setUserComments(data);
+      } catch (error) {
+        console.error("Failed to fetch comments:", error);
+      } finally {
+        setIsLoadingComments(false);
+      }
+    };
+
+    fetchUserComments();
+  }, [currentUser]);
 
   const stats = {
     totalAnime: 1,
@@ -189,7 +209,7 @@ const DashboardContent = ({ user, trendingAnime }) => {
           {/* Left Column - Recent Activity & Watchlist */}
           <div className="space-y-8">
             <section className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-purple-900/30">
-              <div className="flex select-none justify-between items-center mb-4">
+              <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Reviews</h2>
                 <button className="text-purple-300 hover:text-purple-100 transition-colors">
                   <ReviewsIcon className="w-5 h-5" />
@@ -197,32 +217,63 @@ const DashboardContent = ({ user, trendingAnime }) => {
               </div>
 
               <div className="space-y-4">
-                {userReviews.map((review) => (
-                  <div
-                    key={review.id}
-                    className="p-4 bg-gray-900/50 rounded-lg hover:bg-gray-800 transition-colors"
-                  >
-                    <h3 className="font-medium text-purple-100 mb-1">
-                      {review.anime}
-                    </h3>
-                    <p className="text-gray-300 text-sm line-clamp-2">
-                      {review.comment}
-                    </p>
-                    <div className="flex items-center select-none mt-2 gap-3 ">
-                      <span className="text-purple-300 text-sm">
-                        {review.date}
-                      </span>
-                      <span className="text-yellow-400 text-sm">
-                        {review.rating}/10
-                      </span>
+                {isLoadingComments ? (
+                  [...Array(3)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="p-4 bg-gray-900/50 rounded-lg animate-pulse"
+                    >
+                      <div className="h-4 bg-gray-700 rounded w-1/3 mb-2"></div>
+                      <div className="h-3 bg-gray-700 rounded w-2/3"></div>
+                      <div className="flex gap-3 mt-2">
+                        <div className="h-3 bg-gray-700 rounded w-1/4"></div>
+                        <div className="h-3 bg-gray-700 rounded w-1/4"></div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : userComments.length > 0 ? (
+                  userComments.slice(0, 4).map((comment) => (
+                    <div
+                      key={comment.id}
+                      className="p-4 bg-gray-900/50 rounded-lg hover:bg-gray-800 transition-colors"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-medium text-purple-100">
+                          {comment.animeTitle || `Anime ID: ${comment.malId}`}
+                        </h3>
+                        <span className="text-yellow-400 text-sm">
+                          ★ {comment.rating}/10
+                        </span>
+                      </div>
+                      <p className="text-gray-300 text-sm line-clamp-2">
+                        {comment.content}
+                      </p>
+                      <div className="mt-2">
+                        <span className="text-purple-300 text-xs">
+                          {new Date(comment.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-400 text-center py-4">
+                    No reviews yet
+                  </p>
+                )}
               </div>
-
-              <button className="mt-4 select-none w-full py-2 border border-purple-700 rounded-lg hover:bg-purple-900/30 transition-colors">
+              <Link
+                href="/users/reviews"
+                className="mt-4 select-none w-full py-2 border border-purple-700 rounded-lg hover:bg-purple-900/30 transition-colors block text-center"
+              >
                 View All Reviews
-              </button>
+              </Link>
             </section>
 
             <section className="bg-gray-800/50 select-none backdrop-blur-sm rounded-xl p-6 shadow-xl border border-purple-900/30">

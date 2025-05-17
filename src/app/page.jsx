@@ -6,7 +6,6 @@ import ScrollAnimationWrapper from "./components/ScrollAnimationWrapper";
 import Loading from "./Loading";
 import NavButton from "./components/NavButtonClient";
 import AdsenseAd from "./components/ads";
-import Footer from "./components/footer";
 
 const AnimeCarousel = dynamic(() => import("./components/Anime/AnimeMusim"), {
   loading: () => <Loading />,
@@ -325,7 +324,6 @@ export default async function Page() {
     `,
         }}
       />
-      <Footer />
     </div>
   );
 }

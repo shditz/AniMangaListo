@@ -3,6 +3,7 @@ import "./globals.css";
 import NavbarServer from "./components/Utilities/Navbar/Navbar.server";
 import Script from "next/script";
 import SessionProviderWrapper from "./SessionProviderWrapper";
+import Footer from "./components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -74,6 +75,9 @@ export default function RootLayout({ children }) {
           </div>
           {children}
         </SessionProviderWrapper>
+        <footer>
+          <Footer />
+        </footer>
       </body>
     </html>
   );

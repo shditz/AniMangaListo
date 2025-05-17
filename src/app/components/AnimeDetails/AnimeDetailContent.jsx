@@ -15,6 +15,8 @@ import { parseTheme } from "@/app/lib/themeParser";
 import OtherAnime from "@/app/components/Anime/OtherAnime";
 import AnimeReviews from "../AnimeReview";
 import Loading from "@/app/Loading";
+import CommentForm from "../CommentForm";
+import CommentSection from "../CommentSection";
 
 export default function AnimeDetailContent({ id, initialData }) {
   const { data: session } = useSession();
@@ -598,6 +600,12 @@ export default function AnimeDetailContent({ id, initialData }) {
         <AnimeReviews animeId={id} />
       </div>
 
+      <div className="relative bg-black z-10 py-2">
+        <div className="mb-8">
+          <CommentForm malId={parseInt(id)} animeTitle={anime.title} />
+          <CommentSection malId={parseInt(id)} />
+        </div>
+      </div>
       <div className="relative bg-black  z-10   py-2">
         <OtherAnime />
       </div>
