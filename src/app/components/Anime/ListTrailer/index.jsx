@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 
 function removeDuplicates(data, key = "mal_id") {
   const seen = new Set();
@@ -138,12 +137,11 @@ const TrailerCarousel = ({ data, title }) => {
                   >
                     {activeVideoId !== youtubeId ? (
                       <>
-                        <Image
+                        <img
                           src={youtubeThumbnail}
                           alt={anime.title}
-                          fill
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
-                          priority
+                          loading="eager"
+                          className="object-cover absolute inset-0 w-full h-full transition-transform duration-300 group-hover:scale-105"
                         />
 
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
