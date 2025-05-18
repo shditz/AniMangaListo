@@ -30,8 +30,8 @@ const Footer = () => {
     Favorited: "/ViewAll/anime/mostfavorited",
     Popular: "/ViewAll/anime/mostpopular",
     "Latest Update": "/ViewAll/anime/LatestUpdate",
-    "Top Anime": "/ViewAll/topanime",
-    Upcoming: "/ViewAll/topupcoming",
+    "Top Anime": "/ViewAll/anime/topanime",
+    Upcoming: "/ViewAll/anime/topupcoming",
   };
 
   const legalRoutes = {
