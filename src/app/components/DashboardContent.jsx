@@ -169,7 +169,7 @@ const DashboardContent = ({ user, trendingAnime }) => {
                   <StatCard
                     icon={<AnimeIcon />}
                     label="Total Anime"
-                    value={stats.totalAnime}
+                    value={bookmarks.length}
                   />
                   <StatCard
                     icon={<CompletedIcon />}
@@ -179,7 +179,7 @@ const DashboardContent = ({ user, trendingAnime }) => {
                   <StatCard
                     icon={<ReviewsIcon />}
                     label="Reviews"
-                    value={stats.review}
+                    value={userComments.length}
                   />
                   <StatCard
                     icon={<EpisodesIcon />}
@@ -398,7 +398,7 @@ const DashboardContent = ({ user, trendingAnime }) => {
               <div className="mt-4 pt-4 border-t border-gray-700">
                 <div className="flex justify-between text-sm">
                   <span>Total Anime:</span>
-                  <span className="font-medium">{stats.totalAnime}</span>
+                  <span className="font-medium">{bookmarks.length} </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Total Episodes:</span>
