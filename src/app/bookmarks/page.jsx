@@ -3,7 +3,10 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../components/NavButton"), {
+  ssr: false,
+});
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function BookmarkPage() {
@@ -88,12 +91,12 @@ export default function BookmarkPage() {
       {/* Rest of the content */}
       <div className="flex justify-between mt-8 items-center mb-8">
         <h1 className="text-3xl font-bold">My Bookmarks</h1>
-        <Link
+        <NavButton
           href="/users/dashboard"
           className="bg-purple-600 select-none hover:bg-purple-700 px-4 py-2 rounded-lg"
         >
           Back to Dashboard
-        </Link>
+        </NavButton>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">

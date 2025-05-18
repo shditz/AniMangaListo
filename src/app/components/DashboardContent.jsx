@@ -6,6 +6,10 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import EditProfile from "./EditProfile";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("./NavButton"), {
+  ssr: false,
+});
 
 const DashboardContent = ({ user, trendingAnime }) => {
   const { data: session } = useSession();
@@ -268,12 +272,12 @@ const DashboardContent = ({ user, trendingAnime }) => {
                   </p>
                 )}
               </div>
-              <Link
+              <NavButton
                 href="/users/reviews"
                 className="mt-4 select-none w-full py-2 border border-purple-700 rounded-lg hover:bg-purple-900/30 transition-colors block text-center"
               >
                 View All Reviews
-              </Link>
+              </NavButton>
             </section>
 
             <section className="bg-gray-800/50 select-none backdrop-blur-sm rounded-xl p-6 shadow-xl border border-purple-900/30">
@@ -314,12 +318,12 @@ const DashboardContent = ({ user, trendingAnime }) => {
                   </p>
                 )}
               </div>
-              <Link
+              <NavButton
                 href="/bookmarks"
                 className="mt-4 w-full py-2 border border-purple-700 rounded-lg hover:bg-purple-900/30 transition-colors block text-center"
               >
                 View Full Bookmark
-              </Link>
+              </NavButton>
             </section>
           </div>
 
@@ -353,11 +357,11 @@ const DashboardContent = ({ user, trendingAnime }) => {
               ))}
             </div>
 
-            <Link href="/ViewAll/anime/topanime">
+            <NavButton href="/ViewAll/anime/topanime">
               <button className="mt-4 w-full py-2 border border-purple-700 rounded-lg hover:bg-purple-900/30 transition-colors flex items-center justify-center gap-2 group">
                 <span>View All Trending</span>
               </button>
-            </Link>
+            </NavButton>
           </section>
 
           {/* Right Column - Stats & Achievements */}

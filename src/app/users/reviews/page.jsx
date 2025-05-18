@@ -4,8 +4,11 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { motion, useInView } from "framer-motion";
+import dynamic from "next/dynamic";
+const NavButton = dynamic(() => import("../../components/NavButton"), {
+  ssr: false,
+});
 
 const UserReviewsPage = () => {
   const { data: session } = useSession();
@@ -123,12 +126,12 @@ const UserReviewsPage = () => {
             {comment.content}
           </p>
 
-          <Link
+          <NavButton
             href={`/anime/${comment.malId}`}
             className="mt-2 text-purple-400 hover:text-purple-300 text-sm transition-colors"
           >
             View Anime →
-          </Link>
+          </NavButton>
         </div>
       </motion.div>
     );
@@ -158,24 +161,24 @@ const UserReviewsPage = () => {
           <div className="flex justify-between items-center ">
             <h1 className="text-3xl font-bold text-white">My Reviews</h1>
             <p className="text-purple-300">{comments.length} total reviews</p>
-            <Link
+            <NavButton
               href="/users/dashboard"
               className="bg-purple-600 select-none hover:bg-purple-700 px-4 py-2 rounded-lg"
             >
               Back to Dashboard
-            </Link>
+            </NavButton>
           </div>
         </header>
 
         {comments.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-400 text-lg">No reviews yet</p>
-            <Link
+            <NavButton
               href="/"
               className="mt-4 inline-block text-purple-400 hover:text-purple-300"
             >
               Browse Anime →
-            </Link>
+            </NavButton>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
