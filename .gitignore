@@ -1,31 +1,26 @@
-# Node.js dependencies
+
 /node_modules
 /.pnp
 .pnp.js
 
-# Build output
 /.next
 /out
 /build
 
-# Environment variables
-.env*.local
 
-# Logs
+.env*.local
+.env
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Misc
 .DS_Store
 *.pem
 .vercel
 
-# Optional npm cache
 .npm
 
-# Optional eslint cache
 .eslintcache
 
-# Optional stylelint cache
 .stylelintcache
