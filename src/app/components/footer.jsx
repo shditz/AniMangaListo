@@ -1,17 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
-import {
-  FaFacebook,
-  FaInstagram,
-  FaDiscord,
-  FaGithub,
-  FaLinkedin,
-} from "react-icons/fa";
+import {motion} from "framer-motion";
+import {FaFacebook, FaInstagram, FaDiscord, FaGithub, FaLinkedin} from "react-icons/fa";
 import React from "react";
 import Link from "next/link";
 
-const XIcon = ({ className }) => (
+const XIcon = ({className}) => (
   <svg
     viewBox="0 0 24 24"
     className={className}
@@ -44,12 +38,12 @@ const Footer = () => {
     Facebook: "https://www.facebook.com/aditya.kurniwan.12 ",
     Twitter: "https://x.com/ShDitzz ",
     Instagram: "https://www.instagram.com/ry.shditz?igsh=b3RuMnBtM3J5a3Nk ",
-    Linkedin: "#",
+    Linkedin: "-",
     Github: "https://github.com/qwershditz ",
   };
 
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: {opacity: 0},
     visible: {
       opacity: 1,
       transition: {
@@ -60,11 +54,11 @@ const Footer = () => {
   };
 
   const itemVariants = {
-    hidden: { y: 30, opacity: 0 },
+    hidden: {y: 30, opacity: 0},
     visible: {
       y: 0,
       opacity: 1,
-      transition: { type: "spring", stiffness: 100, damping: 15 },
+      transition: {type: "spring", stiffness: 100, damping: 15},
     },
   };
 
@@ -72,9 +66,9 @@ const Footer = () => {
     hover: {
       scale: 1.2,
       rotate: 5,
-      transition: { duration: 0.4, ease: "easeInOut" },
+      transition: {duration: 0.4, ease: "easeInOut"},
     },
-    tap: { scale: 0.95 },
+    tap: {scale: 0.95},
   };
 
   return (
@@ -118,24 +112,20 @@ const Footer = () => {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{once: true, margin: "-100px"}}
           variants={containerVariants}
           className="grid grid-cols-1 md:grid-cols-4 gap-8"
         >
-          <motion.div
-            variants={itemVariants}
-            className="space-y-4 group"
-            whileHover={{ y: -5 }}
-          >
+          <motion.div variants={itemVariants} className="space-y-4 group" whileHover={{y: -5}}>
             <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent animate-shimmer">
               AniMangaListo
             </h2>
             <motion.p
               className="text-gray-400 text-sm transition-colors duration-300"
-              whileHover={{ x: 5, color: "#a855f7" }}
+              whileHover={{x: 5, color: "#a855f7"}}
             >
-              Your Ultimate Anime & Manga Database. Explore thousands of titles
-              with detailed information and reviews.
+              Your Ultimate Anime & Manga Database. Explore thousands of titles with detailed
+              information and reviews.
             </motion.p>
           </motion.div>
 
@@ -150,7 +140,7 @@ const Footer = () => {
                   key={index}
                   whileHover={{
                     x: 10,
-                    transition: { type: "spring", stiffness: 300 },
+                    transition: {type: "spring", stiffness: 300},
                   }}
                 >
                   <Link
@@ -197,12 +187,12 @@ const Footer = () => {
 
             <div className="grid grid-cols-3 gap-3">
               {[
-                { icon: FaFacebook, platform: "Facebook", color: "#1877F2" },
-                { icon: XIcon, platform: "Twitter", color: "#000000" },
-                { icon: FaInstagram, platform: "Instagram", color: "#E4405F" },
-                { icon: FaDiscord, platform: "Discord", color: "#5865F2" },
-                { icon: FaGithub, platform: "Github", color: "#181717" },
-                { icon: FaLinkedin, platform: "Linkedin", color: "#0A66C2" },
+                {icon: FaFacebook, platform: "Facebook", color: "#1877F2"},
+                {icon: XIcon, platform: "Twitter", color: "#000000"},
+                {icon: FaInstagram, platform: "Instagram", color: "#E4405F"},
+                {icon: FaDiscord, platform: "Discord", color: "#5865F2"},
+                {icon: FaGithub, platform: "Github", color: "#181717"},
+                {icon: FaLinkedin, platform: "Linkedin", color: "#0A66C2"},
               ].map((social, index) => (
                 <motion.a
                   key={index}
@@ -227,15 +217,15 @@ const Footer = () => {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, type: "spring", stiffness: 80 }}
+          initial={{opacity: 0, y: 20}}
+          whileInView={{opacity: 1, y: 0}}
+          transition={{delay: 0.5, type: "spring", stiffness: 80}}
           className="border-t border-purple-900/50 mt-8 pt-8 text-center relative"
         >
           <div className="absolute -top-2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-purple-500/30 to-transparent"></div>
           <motion.p
-            whileHover={{ scale: 1.05, color: "#a855f7" }}
-            transition={{ type: "spring", stiffness: 300 }}
+            whileHover={{scale: 1.05, color: "#a855f7"}}
+            transition={{type: "spring", stiffness: 300}}
             className="cursor-default text-gray-400 text-sm inline-block relative z-10"
           >
             © {new Date().getFullYear()} AniMangaListo. All rights reserved.
