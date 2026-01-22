@@ -38,7 +38,7 @@ const Footer = () => {
     Facebook: "https://www.facebook.com/aditya.kurniwan.12 ",
     Twitter: "https://x.com/ShDitzz ",
     Instagram: "https://www.instagram.com/ry.shditz?igsh=b3RuMnBtM3J5a3Nk ",
-    Linkedin: "-",
+    Linkedin: "#",
     Github: "https://github.com/qwershditz ",
   };
 
